@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "=======Creating virtual env========="
-virtualenv -p `which python3` .venv_<<[.custom.project.package_name]>>
-source .venv_<<[.custom.project.package_name]>>/bin/activate
+virtualenv -p `which python3` .venv_wandb_utils
+source .venv_wandb_utils/bin/activate
 
 echo "=======Install test requirements======="
 pip install test_requirements.txt

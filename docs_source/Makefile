@@ -7,7 +7,7 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = ../docs
 SKIP          = "+(docs/* | .docs/*)"
-SOURCEDIR     = ../<<[.custom.project.package_name]>>
+SOURCEDIR     = ../wandb_utils
 PERSISTENT    = 'index.rst\|contributors.rst'
 TEMPLATEDIR   = 'templates'
 # User-friendly check for sphinx-build

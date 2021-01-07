@@ -26,24 +26,24 @@ def load_requirements(path_dir=PATH_ROOT, comment_char='#'):
 install_requires = load_requirements()
 
 setup(
-    name='<<[.custom.project.package_name]>>',
+    name='wandb_utils',
     version='0.0.1',
-    author="<<[(index .custom.project.authors 0).name ]>>",
-    author_email="<<[(index .custom.project.authors 0).email ]>>",
-    description='<<[.custom.project.description]>>',
+    author="Dhruvesh Patel",
+    author_email="1793dnp@gmail.com",
+    description='Utitlity functions and scripts to work with Weights \& Biases',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="<<[.custom.project.url]>>",
+    url="http://www.dhruveshp.com/wandb-utils",
     project_urls={
-        'Documentation': '<<[.custom.project.project_urls.documentation]>>',
-        'Source Code': '<<[.custom.project.project_urls.source_code]>>',
+        'Documentation': 'http://www.dhruveshp.com/wandb-utils',
+        'Source Code': 'https://github.com/dhruvdcoder/wandb-utils',
     },
     packages=find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests", "examples"]
     ),
-    package_data={'box_embeddings': ['py.typed']},
     install_requires=install_requires,
-    keywords=[<<[range .custom.project.keywords ]>>"<<[.]>>", <<[ end ]>>],
+    keywords=["pytorch", "AI", "ML", "Machine Learning", "Deep Learning", ],
+    entry_points={"console_scripts": ["best_models=wandb_utils:script_best_models"]},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
