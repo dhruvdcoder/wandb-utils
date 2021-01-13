@@ -6,8 +6,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 
-def load_requirements(path_dir=PATH_ROOT, comment_char='#'):
-    with open(os.path.join(path_dir, 'core_requirements.txt'), 'r') as file:
+def load_requirements(path_dir=PATH_ROOT, comment_char="#"):
+    with open(os.path.join(path_dir, "core_requirements.txt"), "r") as file:
         lines = [ln.strip() for ln in file.readlines()]
     reqs = []
 
@@ -26,30 +26,41 @@ def load_requirements(path_dir=PATH_ROOT, comment_char='#'):
 install_requires = load_requirements()
 
 setup(
-    name='wandb_utils',
-    version='0.0.1',
+    name="wandb_utils",
+    version="0.0.1",
     author="Dhruvesh Patel",
     author_email="1793dnp@gmail.com",
-    description='Utitlity functions and scripts to work with Weights \& Biases',
+    description="Utitlity functions and scripts to work with Weights \& Biases",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="http://www.dhruveshp.com/wandb-utils",
     project_urls={
-        'Documentation': 'http://www.dhruveshp.com/wandb-utils',
-        'Source Code': 'https://github.com/dhruvdcoder/wandb-utils',
+        "Documentation": "http://www.dhruveshp.com/wandb-utils",
+        "Source Code": "https://github.com/dhruvdcoder/wandb-utils",
     },
     packages=find_packages(
         exclude=["*.tests", "*.tests.*", "tests.*", "tests", "examples"]
     ),
     install_requires=install_requires,
-    keywords=["pytorch", "AI", "ML", "Machine Learning", "Deep Learning", ],
-    entry_points={"console_scripts": ["best_models=wandb_utils:script_best_models"]},
+    keywords=[
+        "pytorch",
+        "AI",
+        "ML",
+        "Machine Learning",
+        "Deep Learning",
+    ],
+    entry_points={
+        "console_scripts": [
+            "best_models=wandb_utils:script_best_models",
+            "multiple_runs_sweep=wandb_utils:script_multiple_runs_sweep",
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        'Development Status :: 3 - Alpha' 'Intended Audience :: Developers',
-        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+        "Development Status :: 3 - Alpha" "Intended Audience :: Developers",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
-    python_requires='>=3.5',
+    python_requires=">=3.5",
 )
