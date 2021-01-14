@@ -78,6 +78,14 @@ def get_args():
         default="training_dumps/config.json",
         help="Path of the config file on wandb. (default:training_dumps/config.json)",
     )
+    parser.add_argument(
+        "--seed_parameters",
+        nargs="+",
+        help=(
+            "Name of the seed parameters, "
+            "ex: --seed_parameters pytorch_seed numpy_seed random_seed (default:None)"
+        ),
+    )
 
     return parser.parse_args()
 

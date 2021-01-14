@@ -7,6 +7,8 @@ from jinja2 import Template
 import tempfile
 import shutil
 import subprocess
+import json
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +133,9 @@ def get_config_file_for_best_run(
     run_id = all_sweeps_best[all_sweeps_best["sweep"] == sweep_id][
         "run"
     ].values[0]
-    get_config_file_for_run(entity, project, run_id, api=api)
+    get_config_file_for_run(
+        entity, project, run_id, output_path=output_path, api=api
+    )
 
     return run_id
 
@@ -156,7 +160,7 @@ metric:
 name: {{sweep_name}}
 
 parameters:
-  pytorch_seed:
+  {{seed_parameter}}:
     values:
     - 2
     - 123
@@ -173,6 +177,14 @@ program: {{program or 'wandb_allennlp'}}
 )
 
 
+jsonnet_with_seed_template = Template(
+    """
+local seed = std.parseJson(std.extVar('seed'));
+
+"""
+)
+
+
 def create_multiple_run_sweep_for_run(
     entity: str,
     project: str,
@@ -182,6 +194,7 @@ def create_multiple_run_sweep_for_run(
     maximum: bool = True,
     relative_path: str = "training_dumps/config.json",
     output_path: str = "config.json",
+    seed_parameters: Optional[List[str]] = None,
     api: Optional[wandb.apis.public.Api] = None,
     **sweep_args,
 ):
@@ -197,6 +210,7 @@ def create_multiple_run_sweep_for_run(
                                  )
 
     """
+    output_path = Path(output_path)
 
     if run:
         get_config_file_for_run(
@@ -222,6 +236,36 @@ def create_multiple_run_sweep_for_run(
             f"Either run or (sweep and metric) have to be supplied."
         )
 
+    # add seed parameters
+
+    if seed_parameters:
+        with open(output_path, "r") as f:
+            config = json.load(f)
+        placeholder = "__temp__seed__"
+
+        for param in seed_parameters:
+            config[param] = placeholder
+        config_str = (
+            "local seed = std.parseJson(std.extVar('seed'));\n"
+            + json.dumps(config)
+        )
+        regex = r"\"__temp__seed__\""
+        config_str = re.sub(
+            regex,
+            "seed",
+            config_str,
+            len(seed_parameters),
+            re.MULTILINE,
+        )
+
+        if output_path.suffix != ".jsonnet":
+            output_path = output_path.with_suffix(".jsonnet")
+        logger.info(
+            f"Added seed parameters and writing final config to {output_path}"
+        )
+        with open(output_path, "w") as f:
+            f.write(config_str)
+
     tags = sweep_args.get("wandb_tags", [])
     tags += ["multiple_runs", run]
     sweep_args["wandb_tags"] = tags
@@ -235,7 +279,10 @@ def create_multiple_run_sweep_for_run(
         with open(sweep_file, "w") as f:
             multiple_runs_sweep.stream(
                 **sweep_args,
-                config_file_path=output_path,
+                config_file_path=str(output_path.absolute()),
+                seed_parameter="env.seed"
+                if seed_parameters
+                else "pytorch_seed",
             ).dump(f)
 
         create_sweep = subprocess.run(
