@@ -86,6 +86,18 @@ def get_args():
             "ex: --seed_parameters pytorch_seed numpy_seed random_seed (default:None)"
         ),
     )
+    parser.add_argument(
+        "--fixed_overrides",
+        type=str,
+        default="{}",
+        help=(
+            "a json(net) structure used to override the experiment configuration, e.g., "
+            "'{\"iterator.batch_size\": 16}'.  Nested parameters can be specified either"
+            " with nested dictionaries or with dot syntax."
+            " For more details see --overrides "
+            "of https://github.com/allenai/allennlp/blob/main/allennlp/commands/train.py "
+        ),
+    )
 
     return parser.parse_args()
 

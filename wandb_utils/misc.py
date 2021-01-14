@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import json
 import re
+import copy
 
 logger = logging.getLogger(__name__)
 
@@ -144,12 +145,13 @@ multiple_runs_sweep = Template(
     """
 command:
 - ${program}
-- --subcommand="{{subcommand or 'train_test_log_to_wandb'}}"
+- --subcommand="{{subcommand or 'train'}}"
 {% for package in include_packages -%}
 - --include-package={{package}}
 {% endfor -%}
 - --config_file={{config_file_path}}
 - --wandb_tags={{wandb_tags|join(',')}}
+- --overrides={{fixed_overrides}}
 - ${args}
 
 method: grid
@@ -185,6 +187,67 @@ local seed = std.parseJson(std.extVar('seed'));
 )
 
 
+def with_fallback(
+    preferred: Dict[str, Any], fallback: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Deep merge two dicts, preferring values from `preferred`.
+    Ref: allennlp/common/params.py
+    """
+
+    def merge(preferred_value: Any, fallback_value: Any) -> Any:
+        if isinstance(preferred_value, dict) and isinstance(
+            fallback_value, dict
+        ):
+            return with_fallback(preferred_value, fallback_value)
+        elif isinstance(preferred_value, dict) and isinstance(
+            fallback_value, list
+        ):
+            # treat preferred_value as a sparse list, where each key is an index to be overridden
+            merged_list = fallback_value
+
+            for elem_key, preferred_element in preferred_value.items():
+                try:
+                    index = int(elem_key)
+                    merged_list[index] = merge(
+                        preferred_element, fallback_value[index]
+                    )
+                except ValueError:
+                    raise ConfigurationError(
+                        "could not merge dicts - the preferred dict contains "
+                        f"invalid keys (key {elem_key} is not a valid list index)"
+                    )
+                except IndexError:
+                    raise ConfigurationError(
+                        "could not merge dicts - the preferred dict contains "
+                        f"invalid keys (key {index} is out of bounds)"
+                    )
+
+            return merged_list
+        else:
+            return copy.deepcopy(preferred_value)
+
+    preferred_keys = set(preferred.keys())
+    fallback_keys = set(fallback.keys())
+    common_keys = preferred_keys & fallback_keys
+
+    merged: Dict[str, Any] = {}
+
+    for key in preferred_keys - fallback_keys:
+        merged[key] = copy.deepcopy(preferred[key])
+
+    for key in fallback_keys - preferred_keys:
+        merged[key] = copy.deepcopy(fallback[key])
+
+    for key in common_keys:
+        preferred_value = preferred[key]
+        fallback_value = fallback[key]
+
+        merged[key] = merge(preferred_value, fallback_value)
+
+    return merged
+
+
 def create_multiple_run_sweep_for_run(
     entity: str,
     project: str,
@@ -205,7 +268,8 @@ def create_multiple_run_sweep_for_run(
                                   run='nyre9qr5',
                                   sweep_args=dict(include_packages=['multilabel_learning'],
                                                   sweep_name='test_sweep',
-                                                  wandb_tags=['test', 'dryrun']
+                                                  wandb_tags=['test', 'dryrun'],
+                                                  fixed_overrides='{"type": "train_test_log_to_wandb"}'
                                                  )
                                  )
 
@@ -236,11 +300,15 @@ def create_multiple_run_sweep_for_run(
             f"Either run or (sweep and metric) have to be supplied."
         )
 
+    with open(output_path, "r") as f:
+        config = json.load(f)
+
+    if sweep_args.get("fixed_overrides"):
+        overrides = json.loads(sweep_args.pop("fixed_overrides"))
+        config = with_fallback(preferred=overrides, fallback=config)
     # add seed parameters
 
     if seed_parameters:
-        with open(output_path, "r") as f:
-            config = json.load(f)
         placeholder = "__temp__seed__"
 
         for param in seed_parameters:
