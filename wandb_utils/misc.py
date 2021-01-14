@@ -266,7 +266,7 @@ def create_multiple_run_sweep_for_run(
         with open(output_path, "w") as f:
             f.write(config_str)
 
-    tags = sweep_args.get("wandb_tags", [])
+    tags = sweep_args.get("wandb_tags", []) or []
     tags += ["multiple_runs", run]
     sweep_args["wandb_tags"] = tags
 
