@@ -151,7 +151,6 @@ command:
 {% endfor -%}
 - --config_file={{config_file_path}}
 - --wandb_tags={{wandb_tags|join(',')}}
-- --overrides={{fixed_overrides}}
 - ${args}
 
 method: grid
