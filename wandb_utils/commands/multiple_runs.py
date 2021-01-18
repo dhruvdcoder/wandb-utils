@@ -87,6 +87,14 @@ def get_args():
         ),
     )
     parser.add_argument(
+        "--include_packages",
+        nargs="+",
+        default=[],
+        help=(
+        "Extra packages to include for allennlp"
+        ),
+    )
+    parser.add_argument(
         "--fixed_overrides",
         type=str,
         default="{}",

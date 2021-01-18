@@ -145,7 +145,7 @@ multiple_runs_sweep = Template(
     """
 command:
 - ${program}
-- --subcommand="{{subcommand or 'train'}}"
+- --subcommand={{subcommand or 'train'}}
 {% for package in include_packages -%}
 - --include-package={{package}}
 {% endfor -%}

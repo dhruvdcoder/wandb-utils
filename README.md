@@ -11,7 +11,7 @@
 1. Creating a sweep for best runs
 
 ```
-multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets -s yufmnnih --metric best_validation_MAP --maximum -o temp/temp1/config.json --wandb_tags dryrun extra --sweep_name temp
+multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets -t bibtex-best-vector -o model_configs/best_models_configs/bibtex-vector.jsonnet -s hizo9wjs -m best_validation_MAP --maximum --seed_parameters pytorch_seed numpy_seed random_seed --fixed_overrides "{\"type\": \"train_test_log_to_wandb\"}" --include_packages multilabel_learning
 ```
 
 ```
