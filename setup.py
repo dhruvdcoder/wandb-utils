@@ -27,7 +27,7 @@ install_requires = load_requirements()
 
 setup(
     name="wandb_utils",
-    version="0.0.1",
+    version="0.0.2",
     author="Dhruvesh Patel",
     author_email="1793dnp@gmail.com",
     description="Utitlity functions and scripts to work with Weights \& Biases",
@@ -53,6 +53,7 @@ setup(
         "console_scripts": [
             "best_models=wandb_utils:script_best_models",
             "multiple_runs_sweep=wandb_utils:script_multiple_runs_sweep",
+            "remove_files_from_server=wandb_utils:script_remove_files_from_server",
         ]
     },
     classifiers=[
