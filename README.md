@@ -18,10 +18,38 @@ multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets -t bibtex-best
 multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets -r x05gzdqy -o temp/temp1/config.json --wandb_tags dryrun extra --sweep_name temp
 ```
 
+2. Remove specific files from the server.
+
+```
+remove_files_from_server --help
+
+
+usage: remove_files_from_server [-h] -e ENTITY -p PROJECT [-s SWEEP] [--allowed_runs ALLOWED_RUNS | --not_allowed_runs NOT_ALLOWED_RUNS] [--allowed_files_globs ALLOWED_FILES_GLOBS | --not_allowed_files_globs NOT_ALLOWED_FILES_GLOBS]
+
+Remove saved files on the server without removing the run. The command supports run and file filters. "Allowed" in the filter means that the filter is of positive type, i.e., it returns true for things that pass that filter. In context of this command, the things that
+pass the filter get deleted.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -e ENTITY, --entity ENTITY
+                        Wandb entity (username or team)
+  -p PROJECT, --project PROJECT
+                        Wandb project
+  -s SWEEP, --sweep SWEEP
+                        Wandb sweep (default:None)
+  --allowed_runs ALLOWED_RUNS
+                        Path to a file containing allowed runs with each run_id on a separate line.
+  --not_allowed_runs NOT_ALLOWED_RUNS
+                        Path to a file containing not allowed runs with each run_id on a separate line.
+  --allowed_files_globs ALLOWED_FILES_GLOBS
+                        Path to a file containing allowed globs with each glob on a separate line.
+  --not_allowed_files_globs NOT_ALLOWED_FILES_GLOBS
+                        Path to a file containing not allowed globs with each glob on a separate line.
+```
+
 
 
 
 # Author(s)
 
 0 [Dhruvesh Patel](https://github.com/dhruvdcoder)
-

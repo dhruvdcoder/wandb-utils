@@ -31,7 +31,13 @@ def readlines(file_: str):
 
 
 def get_args():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Remove saved files on the server without removing the run."
+        ' The command supports run and file filters. "Allowed" in the filter means'
+        " that the filter is of positive type, i.e., it returns true for things that pass"
+        " that filter. In context of this command, the things that pass the filter"
+        " get deleted."
+    )
     parser.add_argument(
         "-e", "--entity", required=True, help="Wandb entity (username or team)"
     )
@@ -53,7 +59,7 @@ def get_args():
     run_spec_group.add_argument(
         "--allowed_runs",
         type=readlines,
-        help="Path to a file containing allowed runs with each run_id on a separate line.",
+        help="Path to a file containing allowed runs (run_ids) with each run_id on a separate line.",
     )
     run_spec_group.add_argument(
         "--not_allowed_runs",
