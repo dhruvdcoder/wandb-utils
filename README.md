@@ -1,4 +1,7 @@
+
 # Weights and Biases utilities
+
+## Features
 
 1. Get the metrics of all runs
 
@@ -6,7 +9,13 @@
 
 3. Delete local copies of the runs, except a pre-specified set of runs.
 
-# Usage
+## Installation
+
+```
+pip install git+https://github.com/dhruvdcoder/wandb-utils.git
+```
+
+## Usage
 
 1. Creating a sweep for best runs
 
