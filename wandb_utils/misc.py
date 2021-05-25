@@ -168,11 +168,6 @@ parameters:
     - 234
     - 579
     - 9099
-    - 23
-    - 456
-    - 9897
-    - 5
-    - 10
 program: {{program or 'wandb_allennlp'}}
 """
 )
@@ -246,7 +241,6 @@ def with_fallback(
 
     return merged
 
-
 def create_multiple_run_sweep_for_run(
     entity: str,
     project: str,
@@ -258,6 +252,7 @@ def create_multiple_run_sweep_for_run(
     output_path: str = "config.json",
     seed_parameters: Optional[List[str]] = None,
     api: Optional[wandb.apis.public.Api] = None,
+    delete_keys: Optional[List] = None,
     **sweep_args,
 ):
     """
@@ -301,6 +296,13 @@ def create_multiple_run_sweep_for_run(
 
     with open(output_path, "r") as f:
         config = json.load(f)
+    # delete before overriding
+    for del_key in delete_keys:
+        val = config
+        nest = del_key.split('.')
+        for k in nest[:-1]:
+            val = val[k]
+        val.pop(nest[-1])
 
     if sweep_args.get("fixed_overrides"):
         overrides = json.loads(sweep_args.pop("fixed_overrides"))
