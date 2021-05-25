@@ -24,7 +24,7 @@ multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets -t bibtex-best
 ```
 
 ```
-multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets3 -t expr-best-gumbel -o ./best_models_configs/expr-gumbel.jsonnet -r yz517iu9 -m best_validation_MAP --seed_parameters pytorch_seed numpy_seed random_seed --fixed_overrides "{\"type\": \"train_test_log_to_wandb\",\"trainer.callbacks\": [\"track_epoch_callback\",\"log_metrics_to_wandb\"]}" --delete_keys "trainer.tensorboard_writer" "data_loader.pin_memory" "trainer.epoch_callbacks"
+multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets3 -t typenet-best-vector -o ./best_models_configs/typenet-vector.jsonnet -r jyaoibd1 -m best_validation_micro_map --seed_parameters pytorch_seed numpy_seed random_seed --fixed_overrides "{\"type\": \"train_test_log_to_wandb\",\"trainer\": {\"patience\":4,\"callbacks\": [\"track_epoch_callback\",\"log_metrics_to_wandb\"],\"checkpointer\":{\"num_serialized_models_to_keep\": 0}},\"model\": {\"add_new_metrics\": true}}" --delete_keys "trainer.tensorboard_writer" "data_loader.pin_memory" "trainer.epoch_callbacks" --include_packages multilabel_learning
 ```
 
 ```
