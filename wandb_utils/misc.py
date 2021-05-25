@@ -298,11 +298,14 @@ def create_multiple_run_sweep_for_run(
         config = json.load(f)
     # delete before overriding
     for del_key in delete_keys:
-        val = config
-        nest = del_key.split('.')
-        for k in nest[:-1]:
-            val = val[k]
-        val.pop(nest[-1])
+        try:
+            val = config
+            nest = del_key.split('.')
+            for k in nest[:-1]:
+                val = val[k]
+            val.pop(nest[-1])
+        except Exception as e:
+            logger.info(f"Key error: {del_key} with {e}")
 
     if sweep_args.get("fixed_overrides"):
         overrides = json.loads(sweep_args.pop("fixed_overrides"))
