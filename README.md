@@ -24,6 +24,10 @@ multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets -t bibtex-best
 ```
 
 ```
+multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets3 -t expr-best-gumbel -o ./best_models_configs/expr-gumbel.jsonnet -r yz517iu9 -m best_validation_MAP --seed_parameters pytorch_seed numpy_seed random_seed --fixed_overrides "{\"type\": \"train_test_log_to_wandb\",\"trainer.callbacks\": [\"track_epoch_callback\",\"log_metrics_to_wandb\"]}" --delete_keys "trainer.tensorboard_writer" "data_loader.pin_memory" "trainer.epoch_callbacks"
+```
+
+```
 multiple_runs_sweep -e iesl-boxes -p multilabel-learning-datasets -r x05gzdqy -o temp/temp1/config.json --wandb_tags dryrun extra --sweep_name temp
 ```
 

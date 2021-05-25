@@ -95,6 +95,14 @@ def get_args():
         ),
     )
     parser.add_argument(
+        "--delete_keys",
+        nargs="+",
+        default=[],
+        help=(
+        "Keys to be deleted. Supports nested keys as a.b.c"
+        ),
+    )
+    parser.add_argument(
         "--fixed_overrides",
         type=str,
         default="{}",
