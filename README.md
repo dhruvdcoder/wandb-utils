@@ -60,7 +60,21 @@ optional arguments:
                         Path to a file containing not allowed globs with each glob on a separate line.
 ```
 
+# Examples of chaining
 
+Note: Don't forget to escape `$` in the mongo query strings.
+
+```
+wandb_utils_chain -e iesl-boxes -p multilabel-learning-datasets3  -s piltv95b get_all_data filter_df -f sweep_name -f run -f test_MAP -f path -i path --query "+test_MAP.idxmax()" print
+
+wandb_utils_chain -e iesl-boxes -p multilabel-learning-datasets3 get_all_data --filters "{\"sweep\":{\"\$in\":[\"piltv95b\", \"ks4tcn2s\"]}}" filter_df -f sweep_name -f run -f path -f test_MAP -i path --query "+test_MAP.idxmax()" print
+```
+
+Get best runs from a set of sweeps or all sweeps. Note that something similar is possible using `groupby`. However, by using groupby, you will lose the other fields (other than, `sweep_name` and `test_MAP`).
+
+```
+>wandb_utils_chain -e iesl-boxes -p multilabel-learning-datasets3 get_all_data --filters "{\"sweep\":{\"\$in\":[\"piltv95b\", \"ks4tcn2s\"]}}" filter_df -f sweep_name -f run -f path -f test_MAP -i path --query "df.sort_values('test_MAP', ascending=False).drop_duplicates(['sweep_name'])" print
+```
 
 
 # Author(s)

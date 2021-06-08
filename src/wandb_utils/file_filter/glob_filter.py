@@ -18,11 +18,15 @@ class GlobBasedFileFilter(FileFilter):
         self.allowed_globs = set(allowed_globs or [])
         self.not_allowed_globs = set(not_allowed_globs or [])
 
-    def match(self, path: str, globs: List[str]) -> bool:
-        path = pathlib.PurePath(path)
+    def match(
+        self,
+        path: Union[str, pathlib.Path, wandb.apis.public.File],
+        globs: List[str],
+    ) -> bool:
+        path_ = pathlib.PurePath(path)
 
         for glob in globs:
-            if path.match(glob):
+            if path_.match(glob):
                 return True
 
         return False
@@ -31,5 +35,7 @@ class GlobBasedFileFilter(FileFilter):
 
         if self.allowed_globs:
             return self.match(file_, self.allowed_globs)
-        else:
+        elif self.not_allowed_globs:
             return not self.match(file_, self.not_allowed_globs)
+        else:
+            return super().__call__(file_)

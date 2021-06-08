@@ -19,6 +19,9 @@ def all_data_df(
     project: str,
     sweep: Optional[str] = None,
     api: Optional[wandb.apis.public.Api] = None,
+    filters: Optional[
+        Dict
+    ] = None,  # see: https://github.com/wandb/client/blob/5a65037a435cbc8a885ab78fe5f23b8d7e10f5d2/wandb/apis/public.py#L428
 ) -> pd.DataFrame:
     """
     Get the data for all the runs.
@@ -26,13 +29,18 @@ def all_data_df(
 
     if api is None:
         logger.info(f"Creating api instance")
-        api = wandb.Api({"entity": entity, "project": project})
+        api = wandb.Api({"entity": entity, "project": project})  # type: ignore
     logger.info(f"Querying wandb...")
 
     if sweep is None:  # get all runs
-        runs = api.runs(f"{entity}/{project}")
+        runs = api.runs(f"{entity}/{project}", filters=filters)  # type: ignore
     else:
-        runs = api.sweep(f"{entity}/{project}/{sweep}").runs
+        f_list = [{"sweep": sweep}]
+
+        if filters:
+            f_list.append(filters)
+        f = {"$and": f_list}
+        runs = api.runs(f"{entity}/{project}", filters=f)  # type:ignore
     summary_list = []
     config_list = []
     name_list = []
@@ -40,7 +48,7 @@ def all_data_df(
 
     for run in runs:
         # run.summary are the output key/values like accuracy.  We call ._json_dict to omit large files
-        summary_list.append(run.summary._json_dict)
+        summary_list.append({k: v for k, v in run.summary._json_dict.items()})
 
         # run.config is the input metrics.  We remove special values that start with _.
         config_list.append(
@@ -48,15 +56,31 @@ def all_data_df(
         )
 
         # run.name is the name of the run.
-        name_list.append(run.id)
+        name_list.append(
+            {
+                "run": run.id,
+                "run_name": run.name,
+                "entity": run.entity,
+                "project": run.project,
+                "path": f"{run.entity}/{run.project}/{run.id}",
+                "tags": "|".join(run.tags),
+            }
+        )
 
         # sweep
-        sweep_list.append(run.sweep.id if run.sweep else "")
+        sweep_list.append(
+            {
+                "sweep": run.sweep.id,
+                "sweep_name": run.sweep.config.get("name", ""),
+            }
+            if run.sweep
+            else {"sweep": "", "sweep_name": ""}
+        )
 
     summary_df = pd.DataFrame.from_records(summary_list)
     config_df = pd.DataFrame.from_records(config_list)
-    name_df = pd.DataFrame({"run": name_list})
-    sweep_df = pd.DataFrame({"sweep": sweep_list})
+    sweep_df = pd.DataFrame.from_records(sweep_list)
+    name_df = pd.DataFrame.from_records(name_list)
     all_df = pd.concat([name_df, sweep_df, config_df, summary_df], axis=1)
 
     return all_df
@@ -241,6 +265,7 @@ def with_fallback(
 
     return merged
 
+
 def create_multiple_run_sweep_for_run(
     entity: str,
     project: str,
@@ -297,10 +322,12 @@ def create_multiple_run_sweep_for_run(
     with open(output_path, "r") as f:
         config = json.load(f)
     # delete before overriding
+
     for del_key in delete_keys:
         try:
             val = config
-            nest = del_key.split('.')
+            nest = del_key.split(".")
+
             for k in nest[:-1]:
                 val = val[k]
             val.pop(nest[-1])
