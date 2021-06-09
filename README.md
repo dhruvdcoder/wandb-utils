@@ -73,7 +73,19 @@ wandb_utils_chain -e iesl-boxes -p multilabel-learning-datasets3 get_all_data --
 Get best runs from a set of sweeps or all sweeps. Note that something similar is possible using `groupby`. However, by using groupby, you will lose the other fields (other than, `sweep_name` and `test_MAP`).
 
 ```
->wandb_utils_chain -e iesl-boxes -p multilabel-learning-datasets3 get_all_data --filters "{\"sweep\":{\"\$in\":[\"piltv95b\", \"ks4tcn2s\"]}}" filter_df -f sweep_name -f run -f path -f test_MAP -i path --query "df.sort_values('test_MAP', ascending=False).drop_duplicates(['sweep_name'])" print
+wandb_utils_chain -e iesl-boxes -p multilabel-learning-datasets3 get_all_data --filters "{\"sweep\":{\"\$in\":[\"piltv95b\", \"ks4tcn2s\"]}}" filter_df -f sweep_name -f run -f path -f test_MAP -i path --query "df.sort_values('test_MAP', ascending=False).drop_duplicates(['sweep_name'])" print
+```
+
+Downloading files for a single run:
+
+```
+wandb_utils download_run_from_wandb --include_filter "**/*.json" --exclude_filter "**/metrics.json" -o wandb/8nfcy7xp/files  8nfcy7xp --overwrite
+```
+
+Copy to rclone remote.
+
+```
+wandb_utils rclone  --filter "'- **/metrics.json'"  --filter "'+ **/*.json'" copy SOURCE REMOTE TARGET
 ```
 
 

@@ -11,6 +11,7 @@ from .wandb_utils import (
     processor,
     apply_decorators,
     DICT,
+    config_file_decorator,
 )
 from .utils import read_df, to_csv
 from .utils import query as df_query
@@ -40,6 +41,7 @@ logger = logging.getLogger(__name__)
     type=str,
 )
 @processor
+@config_file_decorator()
 def filter_df_chained(
     df: pd.DataFrame,
     fields: Tuple[str, ...],
@@ -54,7 +56,6 @@ def filter_df_chained(
         See https://jakevdp.github.io/PythonDataScienceHandbook/03.12-performance-eval-and-query.html for examples of query strings.
     """
     f = list(fields)  # type:ignore
-    breakpoint()
 
     if query:
         df = df_query(df, query)

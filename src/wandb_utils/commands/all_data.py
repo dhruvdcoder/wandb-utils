@@ -11,6 +11,7 @@ from .wandb_utils import (
     processor,
     apply_decorators,
     DICT,
+    config_file_decorator,
 )
 from .utils import write_df
 import logging
@@ -58,6 +59,7 @@ logger = logging.getLogger(__name__)
     """,
 )
 @pass_api_and_info
+@config_file_decorator()
 def get_all_data_command(
     api: wandb.PublicApi,
     entity: Optional[str],
@@ -131,6 +133,7 @@ def get_all_data_command(
 )
 @pass_api_and_info
 @processor
+@config_file_decorator()
 def get_all_data_command_chained(
     df: pd.DataFrame,
     api: wandb.PublicApi,

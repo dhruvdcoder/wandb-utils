@@ -1,7 +1,8 @@
 from wandb_utils.version import VERSION
-from typing import Optional, List, Tuple, TypeVar, Callable, Any, cast
+from typing import Optional, List, Tuple, TypeVar, Callable, Any, cast, Mapping
 import click
 from .temp import hello
+from .utils import load_config, LOCAL_CONFIG_FILENAME, load_commands_config
 import wandb
 from functools import update_wrapper
 import logging
@@ -9,6 +10,7 @@ import os
 import sys
 import pandas as pd
 import json
+import click_config_file
 
 if os.environ.get("WANDB_UTILS_DEBUG"):
     LEVEL = logging.DEBUG
@@ -100,12 +102,47 @@ def pass_api_and_info(f: F) -> F:
                 f" object of type {object_type.__name__!r}"
                 " existing."
             )
+        # populate the default values
 
         return ctx.invoke(
             f, obj.api, obj.entity, obj.project, obj.sweep, *args, **kwargs
         )
 
     return update_wrapper(cast(F, new_func), f)
+
+
+# def __override_with_config(ctx: click.Context, config: Mapping) -> Mapping:
+#    for param, value in ctx.params.items():
+#        if value is None and param in config:
+#            ctx.params[param] = config_data[param]
+#
+#    return ctx
+
+
+def use_config(f: F) -> F:
+    """Reads an set the config on the default_map."""
+
+    def new_func(*args, **kwargs):  # type: ignore
+        ctx = click.get_current_context()
+        commands_config, global_config = load_config()
+
+        if ctx.default_map:
+            ctx.default_map.update(commands_config.get(ctx.info_name, {}))
+        else:
+            ctx.default_map = commands_config.get(ctx.info_name)
+
+        return f(*args, **kwargs)
+
+    return update_wrapper(cast(F, new_func), f)
+
+
+def config_file_decorator():
+    return click_config_file.configuration_option(
+        default=LOCAL_CONFIG_FILENAME,
+        implicit=False,
+        provider=load_commands_config,
+        hidden=True,
+    )
 
 
 @click.group()
@@ -124,6 +161,7 @@ def pass_api_and_info(f: F) -> F:
     help="Wandb sweep (default:None)",
 )
 @click.pass_context
+@config_file_decorator()
 def wandb_utils(
     ctx: click.Context,
     entity: Optional[str],
@@ -131,6 +169,9 @@ def wandb_utils(
     sweep: Optional[str],
 ) -> None:
     ctx.obj = WandbAPIWrapper(entity=entity, project=project, sweep=sweep)
+    # commands_config, global_config = load_config()
+    # ctx.default_map = commands_config
+    # ctx.default_map = {"temp": {"foo": 100}}
 
 
 def processor(f: Callable):
@@ -175,6 +216,7 @@ def apply_decorators(decorators):
     help="Wandb sweep (default:None)",
 )
 @click.pass_context
+@config_file_decorator()
 def wandb_utils_chain(
     ctx: click.Context,
     entity: Optional[str],
@@ -182,6 +224,8 @@ def wandb_utils_chain(
     sweep: Optional[str],
 ) -> None:
     ctx.obj = WandbAPIWrapper(entity=entity, project=project, sweep=sweep)
+    commands_config, global_config = load_config()
+    ctx.default_map = commands_config.get("wandb_utils_chain", {})
 
 
 @wandb_utils_chain.result_callback()
