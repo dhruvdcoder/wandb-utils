@@ -1,4 +1,4 @@
-Box Embeddings
+Weights and Biases Utilities
 =========================
 
 .. mdinclude:: ../README.md
@@ -11,4 +11,4 @@ Box Embeddings
    :maxdepth: 4
    :caption: Code Tree
 
-   box_embeddings
+   wandb_utils
