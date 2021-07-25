@@ -1,6 +1,3 @@
-Weights and Biases Utilities
-=========================
-
 .. mdinclude:: ../README.md
 
 .. toctree::

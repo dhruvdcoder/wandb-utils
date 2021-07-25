@@ -7,7 +7,7 @@ import os
 sys.path.insert(0, os.path.abspath('../'))
 
 extensions = [
-    'sphinx.ext.autodoc',
+    'sphinx.ext.autoapi',
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx.ext.graphviz',
@@ -25,6 +25,19 @@ pygments_style = 'sphinx'
 html_theme = 'sphinx_rtd_theme'
 autoclass_content = "class"
 #html_logo = "images/UMass_IESL.png"
+
+# API Generation
+autoapi_dirs = ["../src/wandb_utils"]
+autoapi_root = "."
+autoapi_options = [
+    "members",
+    "inherited-members",
+    "undoc-members",
+    "show-inheritance",
+    #"show-module-summary",
+]
+autoapi_add_toctree_entry = False
+autoapi_keep_files = True
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autoclass_content
 autoclass_content = "both"
