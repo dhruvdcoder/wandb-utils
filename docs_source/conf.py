@@ -24,7 +24,6 @@ exclude_patterns = ['_build', '**/docs', '**/.docs']
 pygments_style = 'sphinx'
 html_theme = 'sphinx_rtd_theme'
 autoclass_content = "class"
-html_baseurl = dhruveshp
 #html_logo = "images/UMass_IESL.png"
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autoclass_content
