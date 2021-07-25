@@ -39,8 +39,17 @@ setup(
         "Source Code": "https://github.com/dhruvdcoder/wandb-utils",
     },
     packages=find_packages(
-        exclude=["*.tests", "*.tests.*", "tests.*", "tests", "examples"]
+        where="src",
+        exclude=[
+            "*.tests",
+            "*.tests.*",
+            "tests.*",
+            "tests",
+            "examples",
+            "wandb",
+        ],
     ),
+    package_dir={"": "src"},
     install_requires=install_requires,
     keywords=[
         "pytorch",
@@ -51,9 +60,11 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "best_models=wandb_utils:script_best_models",
-            "multiple_runs_sweep=wandb_utils:script_multiple_runs_sweep",
-            "remove_files_from_server=wandb_utils:script_remove_files_from_server",
+            # "best_models=wandb_utils:script_best_models",
+            # "multiple_runs_sweep=wandb_utils:script_multiple_runs_sweep",
+            # "remove_files_from_server=wandb_utils:script_remove_files_from_server",
+            "wandb_utils=__main__:wandb_utils",
+            "wandb_utils_chain=__main__:wandb_utils_chain",
         ]
     },
     classifiers=[
