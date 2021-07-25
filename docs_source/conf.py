@@ -7,12 +7,11 @@ import os
 sys.path.insert(0, os.path.abspath('../'))
 
 extensions = [
-    'sphinx.ext.autoapi',
+    'autoapi.extension',
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx.ext.graphviz',
     'sphinx.ext.inheritance_diagram',
-    'sphinx.ext.githubpages',
     'm2r','aafigure.sphinxext'
 ]
 source_suffix = ['.rst', '.md']
