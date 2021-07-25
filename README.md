@@ -85,7 +85,7 @@ wandb_utils download_run_from_wandb --include_filter "**/*.json" --exclude_filte
 Copy to rclone remote.
 
 ```
-wandb_utils rclone  --filter "'- **/metrics.json'"  --filter "'+ **/*.json'" copy SOURCE REMOTE TARGET
+wandb_utils rclone  --filter "'- **/metrics.json'"  --filter "'+ **/*.json'" copy SOURCE
 ```
 
 

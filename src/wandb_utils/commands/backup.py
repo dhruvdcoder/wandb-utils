@@ -19,6 +19,10 @@ from .wandb_utils import (
 from wandb_utils.file_filter import FileFilter, GlobBasedFileFilter
 import logging
 import tqdm
+import pexpect
+import threading
+import json
+
 
 logger = logging.getLogger(__name__)
 
@@ -76,28 +80,225 @@ class PyClone(pyclone.PyClone):
 
         return r
 
+    def command(
+        self,
+        action: str,
+        source: str,
+        target: str = "",
+        target_remote: str = "",
+        source_remote: str = "",
+    ) -> str:
+        cmdLine = f'bash -c "{self.__binPath} {self.__flagsToString()} --stats=1s --use-json-log --verbose=1 {action} {source_remote+":" if source_remote else ""}{source if source else ""} {target_remote+":" if target_remote else ""}{target} {self.__binSuffix}"'
+        logger.debug(f"Starting following command:\n{cmdLine}")
+
+        return cmdLine
+
+    def __threadedProcess(
+        self,
+        *,
+        action: str,
+        source: str,
+        remote: str,
+        path: str,
+        source_remote: str = "",
+    ) -> None:
+        """
+
+        The rclone process runs under this method as a separate thread, which is launched by :any:`PyClone.__launchThread()`.
+        All available output from `rclone` is placed into :any:`the message buffer <PyClone.__messages>` from this method.
+
+
+        Parameters
+        ----------
+        action : :obj:`str`
+                Provided by a wrapper method such as :any:`PyClone.copy()` and passed to `rclone`.
+
+        source : :obj:`str`
+                Files to transfer.
+
+        remote : :obj:`str`
+                Configured service name.
+
+        path : :obj:`str`
+                Destination to save to.
+
+        """
+
+        logger.debug(
+            f"__threadedProcess() : action={action}, source={source}, remote={remote}, path={path}"
+        )
+
+        logger.debug("touch() : acquire lock")
+        self.__lock.acquire()
+
+        # It takes a moment for the process to spawn
+        self.__proc = True
+
+        # cmdLine = f'bash -c "{self.__binPath} {self.__flagsToString()} --stats=1s --use-json-log --verbose=1 {action} {( source if source else "" )} {remote}:{path} {self.__binSuffix}"'
+        cmdLine = self.command(
+            action,
+            source,
+            path,
+            source_remote=source_remote,
+            target_remote=remote,
+        )
+        logger.debug(f"__threadedProcess() : spawn process : {cmdLine}")
+        self.__proc = pexpect.spawn(
+            cmdLine,
+            echo=False,
+            timeout=None,
+        )
+
+        # Fill buffer
+
+        while not self.__proc.eof():
+
+            line = None
+
+            # Parse JSON
+            try:
+                raw_line = self.__proc.readline().decode().strip()
+                line = json.loads(raw_line)
+                logger.debug("__threadedProcess() : parsed JSON line.")
+                pass  # END TRY
+
+            # Probably noise from Docker Compose
+            except json.JSONDecodeError as e:
+                logger.debug(
+                    f"__threadedProcess() : exception (JSON decoding error) : {e}"
+                )
+                logger.debug(f"Unable to decode: {raw_line}")
+                line = {}
+                pass  # END EXCEPTION
+
+            except Exception as e:
+                logger.error(f"__threadedProcess() : {e}")
+
+                break
+                pass  # END EXCEPTION
+
+            finally:
+                logger.debug(
+                    f"__threadedProcess() : append message to buffer : {line}"
+                )
+                self.__messages.append(line)
+                pass  # END FINALLY
+
+            pass  # END WHILE LOOP
+
+        logger.debug("__threadedProcess() : close process")
+        self.__proc.close(force=True)
+
+        logger.debug("__threadedProcess() : release lock")
+        self.__lock.release()
+
+        pass  # END PRIVATE METHOD : Threaded process
+
+    def __launchThread(
+        self, *, action, source, remote, path, source_remote: str = ""
+    ):
+        """
+
+        This sets up and starts a thread with :any:`PyClone.__threadedProcess()` used as the target,
+        and is used by convenience/wrapper methods such as:
+
+        * :any:`PyClone.copy()`
+
+        * :any:`PyClone.sync()`
+
+        * :any:`PyClone.delete()`
+
+        * :any:`PyClone.purge()`
+
+
+        Parameters
+        ----------
+        action : :obj:`str`
+                Provided by a wrapper method such as :any:`PyClone.copy()` and passed to `rclone`.
+
+        source : :obj:`str`
+                Files to transfer.
+
+        remote : :obj:`str`
+                Configured service name.
+
+        path : :obj:`str`
+                Destination to save to.
+
+        """
+
+        logger.debug(
+            f"__launchThread() : action={action}, source={source}, remote={remote}, path={path}"
+        )
+        self.__thread = threading.Thread(
+            target=self.__threadedProcess,
+            kwargs={
+                "action": action,
+                "source": source,
+                "remote": remote,
+                "path": path,
+                "source_remote": source_remote,
+            },
+        )
+        logger.debug(f"__launchThread() : start thread")
+        self.__thread.start()
+
+        pass  # END PRIVATE METHOD : Launch thread
+
+    def copy(
+        self,
+        source: str,
+        target: str,
+        source_remote: str,
+        target_remote: str,
+    ) -> None:
+        self.__launchThread(
+            action="copy",
+            source=source,
+            remote=target_remote,
+            path=target,
+            source_remote=source_remote,
+        )
+
+    def move(
+        self,
+        source: str,
+        target: str,
+        source_remote: str,
+        target_remote: str,
+    ) -> None:
+        self.__launchThread(
+            action="move",
+            source=source,
+            remote=target_remote,
+            path=target,
+            source_remote=source_remote,
+        )
+
 
 def copy_to_remote(
     rclone: pyclone.PyClone,
     source: pathlib.Path,
-    remote: str,
     target: Optional[pathlib.Path] = None,
-) -> None:
+    source_remote: Optional[str] = None,
+    target_remote: Optional[str] = None,
+) -> bool:
 
     # Copy files from local to remote
-    breakpoint()
     rclone.copy(
         source=str(source),
-        remote=remote,
-        path=str(target) if target is not None else "",
+        target=str(target) if target else "",
+        source_remote=source_remote if source_remote else "",
+        target_remote=target_remote if target_remote else "",
     )
 
+    errors = 0
     try:
         # Ref: https://gitlab.com/ltgiv/pyclone/-/blob/master/examples/progress-tqdm.py
 
         # Overall progress
         totalProgress = tqdm.tqdm(
-            leave=False, unit="pct", unit_scale=False, total=100
+            leave=False, unit="pct", unit_scale=False, total=101
         )
         totalProgress.set_description("Total transfer")
 
@@ -105,7 +306,6 @@ def copy_to_remote(
         pbars = []
 
         # Read message buffer
-        breakpoint()
 
         while rclone.tailing():
 
@@ -114,10 +314,14 @@ def copy_to_remote(
             if rclone.readline():
 
                 # Transfer activity found
-                # breakpoint()
                 transfers = rclone.line.get("stats", {}).get(
                     "transferring", []
                 )
+                errors += int(rclone.line.get("stats", {}).get("errors", 0))
+
+                if errors:
+                    pass
+
                 transfersCount = len(transfers)
 
                 # Update count of progress bars
@@ -141,6 +345,13 @@ def copy_to_remote(
                         # Update total percentage
                         totalProgress.n = int(statusMatch.group(1))
                         totalProgress.update()
+                    elif (
+                        rclone.line.get("msg")
+                        == "There was nothing to transfer"
+                    ):
+                        logger.info("There was nothing to transfer.")
+
+                        break
 
                 del statusMatch
 
@@ -159,19 +370,21 @@ def copy_to_remote(
                 for i, t in enumerate(transfers):
 
                     # Update percentage and name for current progress bar
-                    pbars[i].total = t["size"]
-                    pbars[i].n = t["bytes"]
-                    pbars[i].set_description(t["name"])
-                    pbars[i].update()
+
+                    if "name" in t:  # update only if t != {}
+                        pbars[i].total = t.get("size", 0)
+                        pbars[i].n = t.get("bytes", 0)
+                        pbars[i].set_description(t["name"])
+                        pbars[i].update()
 
                 # Remove progress bars
 
-                if transfersCount < pbarsCount:
-                    [
-                        pb.close()
-                        for pb in pbars[(pbarsCount - transfersCount) :]
-                    ]
-                    del pbars[(pbarsCount - transfersCount) :]
+                # if transfersCount < pbarsCount:
+                #    [
+                #        pb.close()
+                #        for pb in pbars[(pbarsCount - transfersCount) :]
+                #    ]
+                #    del pbars[(pbarsCount - transfersCount) :]
 
             # Wait 0.5 seconds until we query message buffer again
             time.sleep(0.5)
@@ -185,12 +398,12 @@ def copy_to_remote(
     finally:
 
         # Remove any remaining progress bars
-        [pb.close() for pb in pbars[(pbarsCount - transfersCount) :]]
-        totalProgress.close()
-        del totalProgress, pbars
+        # [pb.close() for pb in pbars[(pbarsCount - transfersCount) :]]
 
         # Clean-up
         rclone.stop()
+
+    return not errors > 0
 
 
 @click.group()
@@ -255,24 +468,65 @@ def rclone(
 
 @rclone.command("copy")
 @click.argument("source", type=click.Path(path_type=pathlib.Path))
-@click.argument("remote", type=str, default="")
+@click.option("--source_remote", type=str, default="")
 @click.option(
     "--target",
     type=click.Path(path_type=pathlib.Path),
 )
+@click.option("--target_remote", type=str, default="")
 @click.pass_obj
 def copy(
     rclone: PyClone,
     source: pathlib.Path,
-    remote: str,
+    source_remote: str,
     target: Optional[pathlib.Path],
+    target_remote: str,
 ) -> None:
     """
     Copy from SOURCE to REMOTE:TARGET using rclone.
     """
-    copy_to_remote(
+    error = copy_to_remote(
         rclone,
         source,
-        remote,
         target,
+        source_remote,
+        target_remote,
     )
+
+    if error:
+        raise RuntimeError(
+            "rclone copy produced errors. Set in debug model and check the log."
+        )
+
+
+@rclone.command("move")
+@click.argument("source", type=click.Path(path_type=pathlib.Path))
+@click.option("--source_remote", type=str, default="")
+@click.option(
+    "--target",
+    type=click.Path(path_type=pathlib.Path),
+)
+@click.option("--target_remote", type=str, default="")
+@click.pass_obj
+def copy(
+    rclone: PyClone,
+    source: pathlib.Path,
+    source_remote: str,
+    target: Optional[pathlib.Path],
+    target_remote: str,
+) -> None:
+    """
+    Copy from SOURCE to REMOTE:TARGET using rclone.
+    """
+    error = copy_to_remote(
+        rclone,
+        source,
+        target,
+        source_remote,
+        target_remote,
+    )
+
+    if error:
+        raise RuntimeError(
+            "rclone copy produced errors. Set in debug model and check the log."
+        )

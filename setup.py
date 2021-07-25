@@ -63,8 +63,8 @@ setup(
             # "best_models=wandb_utils:script_best_models",
             # "multiple_runs_sweep=wandb_utils:script_multiple_runs_sweep",
             # "remove_files_from_server=wandb_utils:script_remove_files_from_server",
-            "wandb_utils=wandb_utils.commands:wandb_utils",
-            "wandb_utils_chain=wandb_utils.commands:wandb_utils_chain",
+            "wandb_utils=__main__:wandb_utils",
+            "wandb_utils_chain=__main__:wandb_utils_chain",
         ]
     },
     classifiers=[

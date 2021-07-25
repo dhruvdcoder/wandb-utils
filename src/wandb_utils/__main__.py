@@ -12,6 +12,6 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s", level=LEVEL
 )
 
-from wandb_utils.commands.wandb_utils import wandb_utils as wandb_utils_cli
+from wandb_utils.commands import wandb_utils, wandb_utils_chain
 
-wandb_utils_cli(prog_name="python -m wandb_utils")
+# wandb_utils_cli(prog_name="python -m wandb_utils")
