@@ -28,8 +28,8 @@ jobs:
         deprecatedLabels: "removal"
         enhancementLabel: ":rocket: Features and Enhancements:"
         enhancementLabels: "enhancement"
-        bugsLabel: ":beetle: Bug Fixes:"
-        bugsLabels: "bug,bug-fix,fix,fixes"
+        bugLabel: ":beetle: Bug Fixes:"
+        bugLabels: "bug,bug-fix,fix,fixes"
         removedLabel: ':wastebasket: Removals:'
         removedLabels: 'removal'
         addSections: >-
@@ -41,7 +41,7 @@ jobs:
                         "style": {
                                 "prefix": ":lipstick: Style:",
                                 "labels": ["style"]
-                        }
+                        },
                         "dependencies": {
                                 "prefix": ":package: Dependencies:",
                                 "labels": ["dependencies"]
