@@ -14,7 +14,7 @@ jobs:
     - name: Generate changelog
       uses: browniebroke/action-github-changelog-generator@v2.1.1
       with:
-        #token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GH_TOKEN }}
         author: true
         unreleased: true
         issues: true
@@ -58,5 +58,6 @@ jobs:
                 }
         # See: emojipedia.org for emoji codes
     - uses: EndBug/add-and-commit@v7 # You can change this to use a specific version
+      if: success()
       with:
         add: 'CHANGELOG.md'
