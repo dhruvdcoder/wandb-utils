@@ -39,19 +39,19 @@ jobs:
                                 "labels":["documentation"]
                         },
                         "style": {
-                                "prefix": ":lipstick: Style:"
+                                "prefix": ":lipstick: Style:",
                                 "labels": ["style"]
                         }
                         "dependencies": {
-                                "prefix": ":package: Dependencies:"
+                                "prefix": ":package: Dependencies:",
                                 "labels": ["dependencies"]
                         },
                         "refactoring": {
-                                "prefix": ":hammer: Refactoring:"
+                                "prefix": ":hammer: Refactoring:",
                                 "labels": ["refactoring"]
                         },
                         "ci": {
-                                "prefix": ":construction_worker: Build and CI:"
+                                "prefix": ":construction_worker: Build and CI:",
                                 "labels": ["ci", "build"]
                         }
 
