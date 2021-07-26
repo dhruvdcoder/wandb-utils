@@ -32,7 +32,7 @@ jobs:
         bugLabels: "bug,bug-fix,fix,fixes"
         removedLabel: ':wastebasket: Removals:'
         removedLabels: 'removal'
-        addSections: '{"documentation":{"prefix":"📖 Documentation updates","labels":["documentation"]},"style":{"prefix":"💄 Style","labels":["style"]},"dependencies":{"prefix":"📦 Dependencies","labels":["dependencies"]},"refactoring":{"prefix":"🔨 Refactoring","labels":["refactoring"]},"ci":{"prefix":"👷 Build and CI","labels":["ci", "build"]}}'
+        addSections: '{"documentation":{"prefix":"Documentation updates","labels":["documentation"]},"style":{"prefix":"Style","labels":["style"]},"dependencies":{"prefix":"Dependencies","labels":["dependencies"]},"refactoring":{"prefix":"Refactoring","labels":["refactoring"]},"ci":{"prefix":"Build and CI","labels":["ci", "build"]}}'
         # See: emojipedia.org for emoji codes
     - name: Commit CHANGELOG.md
       uses: EndBug/add-and-commit@v7 # You can change this to use a specific version
