@@ -43,9 +43,6 @@
 - name: performance
   description: Performance
   color: "016175"
-- name: python
-  description: Pull requests that update Python code
-  color: 2b67c6
 - name: question
   description: Further information is requested
   color: d876e3
@@ -53,10 +50,13 @@
   description: Refactoring
   color: ef67c4
 - name: removal
-  description: Removals and Deprecations
+  description: Removals
   color: 9ae7ea
+- name: deprecation
+  description: Deprecations
+  color: 9ae7eb
 - name: style
-  description: Style
+  description: Code style, linting, typechecking, etc.
   color: c120e5
 - name: testing
   description: Testing
