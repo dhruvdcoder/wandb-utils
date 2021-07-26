@@ -17,21 +17,21 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         author: true
         unreleased: true
-        unreleasedLabel: "## :construction: Unreleased"
+        unreleasedLabel: "## 🚧 Unreleased"
         issues: true
         pullRequests: true
         prWoLabels: false
         compareLink: true
         output: CHANGELOG.md
-        breakingLabel: "### :boom: Breaking Changes:"
+        breakingLabel: "### 💥 Breaking Changes:"
         breakingLabels: "breaking"
-        deprecatedLabel: "### :fire: Removals"
-        deprecatedLabels: "removal"
-        enhancementLabel: "### :rocket: Features and Enhancements:"
+        deprecatedLabel: "### 👋 Depricated"
+        deprecatedLabels: "deprecation"
+        enhancementLabel: "### ✨ Features and Enhancements:"
         enhancementLabels: "enhancement"
-        bugsLabel: "### :beetle: Bug Fixes:"
+        bugsLabel: "### 🐛 Bug Fixes:"
         bugLabels: "bug,bug-fix,fix,fixes"
-        removedLabel: '### :wastebasket: Removals:'
+        removedLabel: '### 🗑️ Removals:'
         removedLabels: 'removal'
         addSections: >-
                 {
