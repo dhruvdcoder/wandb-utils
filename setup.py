@@ -5,6 +5,10 @@ PATH_ROOT = os.path.dirname(__file__)
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+VERSION = {}  # type: ignore
+with open("src/python_research_project/version.py", "r") as version_file:
+    exec(version_file.read(), VERSION)
+
 
 def load_requirements(path_dir=PATH_ROOT, comment_char="#"):
     with open(os.path.join(path_dir, "core_requirements.txt"), "r") as file:
@@ -27,7 +31,7 @@ install_requires = load_requirements()
 
 setup(
     name="wandb_utils",
-    version="0.0.2",
+    version=VERSION["VERSION"],
     author="Dhruvesh Patel",
     author_email="1793dnp@gmail.com",
     description="Utitlity functions and scripts to work with Weights \& Biases",
@@ -35,7 +39,7 @@ setup(
     long_description_content_type="text/markdown",
     url="http://www.dhruveshp.com/wandb-utils",
     project_urls={
-        "Documentation": "http://www.dhruveshp.com/wandb-utils",
+        "Documentation": "https://wandb-utils.readthedocs.io",
         "Source Code": "https://github.com/dhruvdcoder/wandb-utils",
     },
     packages=find_packages(
@@ -52,17 +56,14 @@ setup(
     package_dir={"": "src"},
     install_requires=install_requires,
     keywords=[
-        "pytorch",
         "AI",
         "ML",
+        "Optimization",
         "Machine Learning",
         "Deep Learning",
     ],
     entry_points={
         "console_scripts": [
-            # "best_models=wandb_utils:script_best_models",
-            # "multiple_runs_sweep=wandb_utils:script_multiple_runs_sweep",
-            # "remove_files_from_server=wandb_utils:script_remove_files_from_server",
             "wandb_utils=__main__:wandb_utils",
             "wandb_utils_chain=__main__:wandb_utils_chain",
         ]
@@ -71,8 +72,10 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Development Status :: 3 - Alpha" "Intended Audience :: Developers",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Science/Research",
+        "Natural Language :: English",
     ],
-    python_requires=">=3.5",
+    python_requires=">=3.7",
 )

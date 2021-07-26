@@ -7,5 +7,3 @@
 .. toctree::
    :maxdepth: 4
    :caption: Code Tree
-
-   wandb_utils

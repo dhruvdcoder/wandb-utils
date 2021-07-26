@@ -27,7 +27,6 @@ autoclass_content = "class"
 
 # API Generation
 autoapi_dirs = ["../src/wandb_utils"]
-autoapi_root = "."
 autoapi_options = [
     "members",
     "inherited-members",
@@ -35,8 +34,9 @@ autoapi_options = [
     "show-inheritance",
     #"show-module-summary",
 ]
-autoapi_add_toctree_entry = False
-autoapi_keep_files = True
+autoapi_add_toctree_entry = True
+autoapi_keep_files = False
+autoapi_template_dir = "autoapi_templates"
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#confval-autoclass_content
 autoclass_content = "both"
