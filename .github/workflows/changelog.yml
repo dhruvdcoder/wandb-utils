@@ -17,41 +17,42 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         author: true
         unreleased: true
+        unreleasedLabel: "## :construction: Unreleased"
         issues: true
         pullRequests: true
         prWoLabels: false
         compareLink: true
         output: CHANGELOG.md
-        breakingLabel: ":boom: Breaking Changes:"
+        breakingLabel: "### :boom: Breaking Changes:"
         breakingLabels: "breaking"
-        deprecatedLabel: ":fire: Removals"
+        deprecatedLabel: "### :fire: Removals"
         deprecatedLabels: "removal"
-        enhancementLabel: ":rocket: Features and Enhancements:"
+        enhancementLabel: "### :rocket: Features and Enhancements:"
         enhancementLabels: "enhancement"
-        bugLabel: ":beetle: Bug Fixes:"
+        bugsLabel: "### :beetle: Bug Fixes:"
         bugLabels: "bug,bug-fix,fix,fixes"
-        removedLabel: ':wastebasket: Removals:'
+        removedLabel: '### :wastebasket: Removals:'
         removedLabels: 'removal'
         addSections: >-
                 {
                         "documentation": {
-                                "prefix":"📖 Documentation updates",
+                                "prefix":"### 📖 Documentation updates",
                                 "labels":["documentation"]
                         },
                         "style": {
-                                "prefix":"💄 Style",
+                                "prefix":"### 💄 Style",
                                 "labels":["style"]
                         },
                         "dependencies": {
-                                "prefix":"📦 Dependencies",
+                                "prefix":"### 📦 Dependencies",
                                 "labels":["dependencies"]
                         },
                         "refactoring": {
-                                "prefix":"🔨 Refactoring",
+                                "prefix":"### 🔨 Refactoring",
                                 "labels":["refactoring"]
                         },
                         "ci":{
-                                "prefix":"👷 Build and CI",
+                                "prefix":"### 👷 Build and CI",
                                 "labels":["ci", "build"]
                         }
                 }
