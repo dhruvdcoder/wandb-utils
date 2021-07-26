@@ -17,7 +17,7 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         author: true
         unreleased: true
-        unreleasedLabel: "##🚧 Unreleased"
+        unreleasedLabel: "🚧Unreleased"
         issues: true
         pullRequests: true
         prWoLabels: false
