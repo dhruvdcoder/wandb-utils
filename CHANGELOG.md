@@ -1,12 +1,16 @@
 # Changelog
 
+## [##](https://github.com/dhruvdcoder/wandb-utils/tree/HEAD)
+
+[Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.0.2...HEAD)
+
+### 👷 Build and CI
+
+- Add automated CHANGELOG generation [\#7](https://github.com/dhruvdcoder/wandb-utils/issues/7)
+
 ## [v0.0.2](https://github.com/dhruvdcoder/wandb-utils/tree/v0.0.2) (2021-07-26)
 
 [Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/28224aab8003c172b8779dcbe00fcd1d3554d030...v0.0.2)
-
-👷 Build and CI
-
-- Add automated CHANGELOG generation [\#7](https://github.com/dhruvdcoder/wandb-utils/issues/7)
 
 
 
