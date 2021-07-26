@@ -1,6 +1,6 @@
 # Changelog
 
-## [##](https://github.com/dhruvdcoder/wandb-utils/tree/HEAD)
+## [##🚧](https://github.com/dhruvdcoder/wandb-utils/tree/HEAD)
 
 [Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.0.2...HEAD)
 
