@@ -13,14 +13,49 @@ from .wandb_utils import (
     DICT,
     config_file_decorator,
 )
-from .utils import read_df, to_csv
-from .utils import query as df_query
+from wandb_utils.misc import read_df, to_csv
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-@click.command(name="filter_df")
+def __query(df: pd.DataFrame, q: str, engine: str = "python") -> pd.DataFrame:
+    try:
+        df = df.query(q, engine=engine)
+    except Exception as e:
+        logger.warning(f"df.query failed with {e}")
+        logger.warning("trying pd.eval")
+        try:
+            df = pd.eval(q, engine=engine)
+        except Exception as e:
+            logger.warning(f"pd.eval failed with {e}")
+            logger.warning("trying python's eval")
+            df = eval(q)
+
+    return df
+
+
+def df_query(
+    df: pd.DataFrame, df_filter: str, engine: str = "python"
+) -> pd.DataFrame:
+    logger.debug(f"Filtering using {df_filter}")
+
+    if df_filter.startswith("-"):  # remove the filter results
+        df_ = __query(df, df_filter[1:], engine=engine)
+        df = df[~df.index.isin(df_.index)]
+    elif df_filter.startswith("+"):  # keep only the filter results
+        df = __query(df, df_filter[1:], engine=engine)
+    else:
+        df = __query(df, df_filter, engine=engine)
+
+    if not isinstance(df, pd.DataFrame):
+        if isinstance(df, pd.Series):
+            df = pd.DataFrame(df).T
+
+    return df
+
+
+@click.command(name="filter-df")
 @click.option(
     "-f",
     "--fields",
@@ -42,7 +77,7 @@ logger = logging.getLogger(__name__)
 )
 @processor
 @config_file_decorator()
-def filter_df_chained(
+def filter_df(
     df: pd.DataFrame,
     fields: Tuple[str, ...],
     index: str,

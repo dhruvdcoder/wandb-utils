@@ -88,6 +88,17 @@ Copy to rclone remote.
 wandb_utils rclone  --filter "'- **/metrics.json'"  --filter "'+ **/*.json'" copy SOURCE
 ```
 
+Get the sweep ids of the sweeps that have 'best' in their sweep name
+
+```
+wandb_utils_chain -e iesl-boxes -p multilabel-learning-datasets3 get_all_data --filters "{\"sweep\":{\"\$in\":[\"d8gdtyuq\", \"7arap6ir\"]}}" filter_df -f sweep -f sweep_name -f run -f path -f test_MAP -i path --query "df.sort_values('test_MAP', ascending=False).drop_duplicates(['sweep_name'])" filter_df -f sweep -f sweep_name --query "df[df.sweep_name.str.contains('best')]" print
+
+
+path	sweep	sweep_name
+iesl-boxes/multilabel-learning-datasets3/uvbahil2	7arap6ir	expr-best-vector
+iesl-boxes/multilabel-learning-datasets3/vl8pcw9k	d8gdtyuq	expr-best-hyperbolic-max-cmap
+```
+
 
 # Author(s)
 

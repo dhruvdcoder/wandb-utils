@@ -16,6 +16,7 @@ from .wandb_utils import (
     pass_api_and_info,
     config_file_decorator,
 )
+from .common import processor
 from wandb_utils.file_filter import FileFilter, GlobBasedFileFilter
 import logging
 import tqdm
@@ -508,7 +509,7 @@ def copy(
 )
 @click.option("--target_remote", type=str, default="")
 @click.pass_obj
-def copy(
+def move(
     rclone: PyClone,
     source: pathlib.Path,
     source_remote: str,

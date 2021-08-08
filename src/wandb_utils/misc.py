@@ -3,6 +3,8 @@ import wandb
 import pandas as pd
 import logging
 from pathlib import Path
+import pathlib
+import sys
 from jinja2 import Template
 import tempfile
 import shutil
@@ -12,6 +14,30 @@ import re
 import copy
 
 logger = logging.getLogger(__name__)
+
+
+def to_csv(df: pd.DataFrame) -> str:
+    return df.to_csv(sep="\t")
+
+
+def write_df(
+    df: pd.DataFrame, output_file: Optional[pathlib.Path], skip_writing: bool
+) -> None:
+    if output_file and not skip_writing:
+        with open(output_file, "w") as f:
+            logger.debug(f"Writing to {output_file}.")
+            output = to_csv(df)
+            f.write(output)
+    elif not skip_writing:
+        logger.debug(f"No output file, printing on stdout.")
+        output = to_csv(df)
+        sys.stdout.write(output)
+    else:
+        logger.debug("Not writing/printing because skip_writing=True")
+
+
+def read_df(path: pathlib.Path) -> pd.DataFrame:
+    return pd.read_csv(path, sep="\t")
 
 
 def all_data_df(

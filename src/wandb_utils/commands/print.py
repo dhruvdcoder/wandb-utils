@@ -11,8 +11,9 @@ from .wandb_utils import (
     processor,
     apply_decorators,
     DICT,
+    config_file_decorator,
 )
-from .utils import write_df, query
+from wandb_utils.misc import write_df
 import logging
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,8 @@ logger = logging.getLogger(__name__)
     help="If given the output is written to the file.",
 )
 @processor
-def print_chained(
+@config_file_decorator()
+def print_command(
     df: pd.DataFrame,
     output_file: Optional[pathlib.Path],
 ) -> pd.DataFrame:

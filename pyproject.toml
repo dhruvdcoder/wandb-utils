@@ -13,3 +13,6 @@ ignore = ["W504", "W504", "E402", "E731", "C40", "E741", "F40", "F841"]
 line-length = 79
 target-version = ["py37"]
 exclude = "(.eggs|.git|.hg|.mypy_cache|.nox|.tox|.venv*|.svn|_build|buck-out|build|dist|__pycache__)"
+
+[tool.pytest.ini_options]
+addopts = "-v"

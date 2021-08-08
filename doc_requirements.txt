@@ -4,3 +4,4 @@ git+https://github.com/miyakogi/m2r.git
 aafigure
 sphinx-autoapi
 docstr-coverage
+sphinx-click

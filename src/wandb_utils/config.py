@@ -1,9 +1,20 @@
-from typing import List, Tuple, Union, Dict, Any, Optional, cast
+from typing import (
+    List,
+    Tuple,
+    Union,
+    Dict,
+    Any,
+    Optional,
+    cast,
+    TypeVar,
+    Callable,
+)
 import logging
 import pathlib
 from ruamel.yaml import YAML
 import click
 from copy import deepcopy
+import click_config_file
 
 logger = logging.getLogger(__name__)
 
@@ -69,4 +80,33 @@ def load_config(
         if cmd_name
         else deepcopy(RAW_CONFIG),
         deepcopy(GLOBAL_SETTINGS),
+    )
+
+
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+def use_config(f: F) -> F:
+    """Reads an set the config on the default_map."""
+
+    def new_func(*args, **kwargs):  # type: ignore
+        ctx = click.get_current_context()
+        commands_config, global_config = load_config()
+
+        if ctx.default_map:
+            ctx.default_map.update(commands_config.get(ctx.info_name, {}))
+        else:
+            ctx.default_map = commands_config.get(ctx.info_name)
+
+        return f(*args, **kwargs)
+
+    return update_wrapper(cast(F, new_func), f)
+
+
+def config_file_decorator():
+    return click_config_file.configuration_option(
+        default=LOCAL_CONFIG_FILENAME,
+        implicit=False,
+        provider=load_commands_config,
+        hidden=True,
     )

@@ -11,9 +11,11 @@ from .wandb_utils import (
     pass_api_and_info,
     config_file_decorator,
 )
+from .common import processor
 from wandb_utils.file_filter import FileFilter, GlobBasedFileFilter
 import logging
 import tqdm
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +70,7 @@ def download_runs_from_wandb(
         )
 
 
-@click.command(name="download_run_from_wandb")
+@click.command(name="download-run-from-wandb")
 @click.argument("run", type=str)
 @click.option(
     "-o",
@@ -91,8 +93,10 @@ def download_runs_from_wandb(
 )
 @click.option("--overwrite", is_flag=True)
 @pass_api_and_info
+@processor
 @config_file_decorator()
 def download_run_from_wandb_command(
+    df: pd.DataFrame,
     api: wandb.PublicApi,
     entity: Optional[str],
     project: Optional[str],

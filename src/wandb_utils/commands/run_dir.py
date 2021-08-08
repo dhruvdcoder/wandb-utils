@@ -13,13 +13,13 @@ from .wandb_utils import (
     DICT,
     config_file_decorator,
 )
-from .utils import get_local_run_dir
+from .common import processor
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-@click.command(name="get_run_dir")
+@click.command(name="run-dir")
 @click.argument(
     "run",
     type=str,
@@ -34,8 +34,10 @@ logger = logging.getLogger(__name__)
     default=pathlib.Path("wandb"),
 )
 @pass_api_and_info
+@processor
 @config_file_decorator()
-def get_run_dir_command(
+def run_dir_command(
+    df: Optional[pd.DataFrame],
     api: wandb.PublicApi,
     entity: Optional[str],
     project: Optional[str],

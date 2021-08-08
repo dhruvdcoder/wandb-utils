@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 VERSION = {}  # type: ignore
-with open("src/python_research_project/version.py", "r") as version_file:
+with open("src/wandb_utils/version.py", "r") as version_file:
     exec(version_file.read(), VERSION)
 
 
@@ -64,8 +64,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "wandb_utils=__main__:wandb_utils",
-            "wandb_utils_chain=__main__:wandb_utils_chain",
+            "wandb-utils=wandb_utils.__main__:wandb_utils",
         ]
     },
     classifiers=[

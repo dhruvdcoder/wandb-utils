@@ -90,17 +90,13 @@ def get_args():
         "--include_packages",
         nargs="+",
         default=[],
-        help=(
-        "Extra packages to include for allennlp"
-        ),
+        help=("Extra packages to include for allennlp"),
     )
     parser.add_argument(
         "--delete_keys",
         nargs="+",
         default=[],
-        help=(
-        "Keys to be deleted. Supports nested keys as a.b.c"
-        ),
+        help=("Keys to be deleted. Supports nested keys as a.b.c"),
     )
     parser.add_argument(
         "--fixed_overrides",
