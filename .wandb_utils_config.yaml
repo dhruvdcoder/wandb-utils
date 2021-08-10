@@ -2,9 +2,5 @@ wandb_utils:
   entity: iesl-boxes
   project: multilabel-learning-datasets3
 
-wandb_utils_chain:
-  entity: iesl-boxes
-  project: multilabel-learning-datasets3
-
-get_all_data:
-  fields: [sweep_name, run, test_MAP]
+#get_all_data:
+    #fields: [sweep_name, run, test_MAP]

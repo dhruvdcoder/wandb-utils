@@ -13,5 +13,3 @@ logging.basicConfig(
 )
 
 from wandb_utils.commands import wandb_utils
-
-# wandb_utils_cli(prog_name="python -m wandb_utils")

@@ -98,8 +98,3 @@ path	sweep	sweep_name
 iesl-boxes/multilabel-learning-datasets3/uvbahil2	7arap6ir	expr-best-vector
 iesl-boxes/multilabel-learning-datasets3/vl8pcw9k	d8gdtyuq	expr-best-hyperbolic-max-cmap
 ```
-
-
-# Author(s)
-
-0 [Dhruvesh Patel](https://github.com/dhruvdcoder)
