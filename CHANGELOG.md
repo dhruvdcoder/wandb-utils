@@ -4,6 +4,15 @@
 
 [Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.0.2...HEAD)
 
+### ✨ Features and Enhancements:
+
+- Move to click cli [\#5](https://github.com/dhruvdcoder/wandb-utils/issues/5)
+- Rclone client [\#4](https://github.com/dhruvdcoder/wandb-utils/issues/4)
+
+### 📖 Documentation updates
+
+- Update docs theme and restructure [\#13](https://github.com/dhruvdcoder/wandb-utils/pull/13) ([dhruvdcoder](https://github.com/dhruvdcoder))
+
 ### 👷 Build and CI
 
 - Add automated CHANGELOG generation [\#7](https://github.com/dhruvdcoder/wandb-utils/issues/7)
