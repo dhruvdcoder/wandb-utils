@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import wandb
 
 if os.environ.get("WANDB_UTILS_DEBUG"):
     LEVEL = logging.DEBUG
@@ -11,5 +12,6 @@ else:
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s", level=LEVEL
 )
+
 
 from wandb_utils.commands import wandb_utils

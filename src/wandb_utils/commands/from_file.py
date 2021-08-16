@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @click.command(name="from-file")
 @click.argument(
-    "input_file",
+    "input-file",
     required=True,
     type=click.Path(path_type=pathlib.Path),  # type: ignore
 )
@@ -48,9 +48,9 @@ def from_file_command(
     fields: Tuple[str, ...],
     index: str,
 ) -> pd.DataFrame:
-    """Read the data of runs from a csv file created using any wandb-utils command.
+    """Read the data of runs from a `input-file` created using any wandb-utils command.
 
-    INPUT_FILE is the path to a .csv file.
+    `input-file` is the path to a .csv file.
     """
     df = from_file(
         input_file,

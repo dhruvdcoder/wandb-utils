@@ -11,13 +11,15 @@ What can it do?
 
 1. :doc:`Query data for your experiments<getting_data>` on wandb server using a single command.
 2. Apply a chain of multiple :doc:`data processing<processing_data>` commands to your run data.
-3. :doc: `Download run files<download_run>` using a single command.
+3. :doc:`Download files for runs<download_run>` using a single command `files`.
+4. :doc:`Upload files to runs<uploading_files_to_runs>` **after** its completion using a single command `files`.
 
 .. toctree::
    :hidden:
-   :maxdepth: 3
+   :maxdepth: 1
 
    Getting data <getting_data>
    Processing data <processing_data>
    Downloading run files <download_run>
+   Uploading run files <uploading_files_to_runs>
    cli
