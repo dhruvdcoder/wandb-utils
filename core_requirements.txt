@@ -2,3 +2,4 @@ wandb
 ruamel.yaml
 click
 click-option-group
+click-config-file
