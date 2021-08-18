@@ -1,5 +1,5 @@
 wandb
 ruamel.yaml
-click
+click>=8.0.1
 click-option-group
 click-config-file
