@@ -1,4 +1,4 @@
 wandb
 ruamel.yaml
 click
-click-opt-group
+click-option-group
