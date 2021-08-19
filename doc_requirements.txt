@@ -1,7 +1,14 @@
 sphinx
+ruamel.yaml
+click>=8.0.1
+click-option-group
+click-config-file
+PyClone
+tqdm
 sphinx-rtd-theme
 git+https://github.com/miyakogi/m2r.git
 aafigure
 sphinx-autoapi
 docstr-coverage
 sphinx-click
+wandb
