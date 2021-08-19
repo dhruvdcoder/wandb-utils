@@ -25,10 +25,10 @@ Chaining can be used to download/delete files for multiple runs.
 
 .. code-block:: console
 
-   $ wandb-utils \     # main command
-   all-data --filters "{\"sweep\": {\"\$in\": [\"vg17h6fd\"]} }" \         # dataframe of runs with specific sweep
-   filter-df -f run \       # keep only the run column
-   files -f "+ *.json" --destination local --action copy --base-path temp df        # download all json files in temp dir
+   $ wandb-utils \
+   all-data --filters "{\"sweep\": {\"\$in\": [\"vg17h6fd\"]} }" \
+   filter-df -f run \
+   files -f "+ *.json" --destination local --action copy --base-path temp df
 
 
 .. note::
@@ -38,7 +38,7 @@ Similarly :code:`--action delete` can be used to delete files from wandb server.
 
 .. code-block:: console
 
-   $ wandb-utils \     # main command
-   all-data --filters "{\"sweep\": {\"\$in\": [\"vg17h6fd\"]} }" \     # dataframe of runs with specific sweep
-   filter-df -f run \                   # keep only the run column
-   files -f "+ *.json" --destination wandb --action delete df        # delete all json files on wandb
+   $ wandb-utils \
+   all-data --filters "{\"sweep\": {\"\$in\": [\"vg17h6fd\"]} }" \
+   filter-df -f run \
+   files -f "+ *.json" --destination wandb --action delete df
