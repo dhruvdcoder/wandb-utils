@@ -36,8 +36,8 @@ def write_df(
         logger.debug("Not writing/printing because skip_writing=True")
 
 
-def read_df(path: pathlib.Path) -> pd.DataFrame:
-    return pd.read_csv(path, sep="\t")
+def read_df(path: pathlib.Path, sep: str = "\t") -> pd.DataFrame:
+    return pd.read_csv(path, sep=sep)
 
 
 def all_data_df(

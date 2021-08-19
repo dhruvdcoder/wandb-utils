@@ -28,19 +28,23 @@ def files_on_wandb(
     entity: str,
     project: str,
     run: str,
-    output_dir: pathlib.Path,
+    output_dir: Optional[pathlib.Path],
     include_filter: Optional[List[str]] = None,
     exclude_filter: Optional[List[str]] = None,
     overwrite: bool = False,
     action: Literal["copy", "move", "delete"] = "copy",
 ) -> None:
     run_ = api.run(f"{entity}/{project}/{run}")
-    output_dir.mkdir(parents=True, exist_ok=overwrite)
+
+    if action in ["copy", "move"] and output_dir is None:
+        raise ValueError("For 'copy' or 'move' output_dir cannot be None")
+
+    if output_dir is not None:
+        output_dir.mkdir(parents=True, exist_ok=overwrite)
 
     ff = GlobBasedFileFilter(
         include_filter=include_filter, exclude_filter=exclude_filter
     )
-    logger.debug(f"Downloading to directory {output_dir}")
 
     if action in ["move", "delete"]:
 
@@ -56,7 +60,7 @@ def files_on_wandb(
     if action in ["move", "copy"]:
 
         def download(f: wandb.apis.public.File) -> None:
-            logger.debug(f"Downloading: {f.name}")
+            logger.debug(f"Downloading: {f.name} to {output_dir}")
             f.download(output_dir, replace=overwrite)
 
     else:
@@ -183,7 +187,9 @@ def files_command(
                     row["run"],
                     files,
                     files_from_file,
-                    base_path=base_path / row["run"],
+                    base_path=base_path / row["run"]
+                    if base_path is not None
+                    else None,
                     destination=destination,
                     overwrite=overwrite,
                     action=action,
@@ -240,8 +246,6 @@ def process_run(
         assert entity
         assert project
 
-        if not base_path:
-            raise ValueError(f"With --download, --base-path has to be passed.")
         files_on_wandb(
             api,
             entity,
