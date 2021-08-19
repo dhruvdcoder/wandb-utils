@@ -12,6 +12,7 @@
 
 ### 📖 Documentation updates
 
+- Add wandb to doc requirements [\#15](https://github.com/dhruvdcoder/wandb-utils/pull/15) ([dhruvdcoder](https://github.com/dhruvdcoder))
 - Update docs theme and restructure [\#13](https://github.com/dhruvdcoder/wandb-utils/pull/13) ([dhruvdcoder](https://github.com/dhruvdcoder))
 
 ### 👷 Build and CI
