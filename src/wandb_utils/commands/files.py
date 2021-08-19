@@ -3,6 +3,7 @@ import click
 import wandb
 import pandas as pd
 import pathlib
+import tqdm
 
 import sys
 from textwrap import dedent
@@ -179,7 +180,7 @@ def files_command(
                 "Options run=df, destination=wandb and action=move or copy are not supported together"
             )
         try:
-            for idx, row in df.iterrows():
+            for idx, row in tqdm.tqdm(df.iterrows()):
                 process_run(
                     api,
                     entity,
