@@ -5,3 +5,4 @@ click-option-group
 click-config-file
 PyClone
 tqdm
+pandas
