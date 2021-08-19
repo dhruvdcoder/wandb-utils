@@ -180,7 +180,8 @@ def files_command(
                 "Options run=df, destination=wandb and action=move or copy are not supported together"
             )
         try:
-            for idx, row in tqdm.tqdm(df.iterrows()):
+            
+            for idx, row in tqdm.tqdm(df.iterrows(),total=len(df)):
                 process_run(
                     api,
                     entity,
