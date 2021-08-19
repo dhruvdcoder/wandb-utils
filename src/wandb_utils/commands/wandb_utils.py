@@ -57,9 +57,12 @@ def wandb_utils(
     project: Optional[str],
     sweep: Optional[str],
 ) -> None:
+    logger.debug(
+        f"Create wandb api instance with entity={entity}, project={project}, sweep={sweep}"
+    )
     ctx.obj = WandbAPIWrapper(entity=entity, project=project, sweep=sweep)
     commands_config, global_config = load_config()
-    ctx.default_map = commands_config.get("wandb_utils_chain", {})
+    ctx.default_map = commands_config.get("wandb_utils", {})
 
 
 @wandb_utils.result_callback()

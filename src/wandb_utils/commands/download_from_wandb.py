@@ -30,6 +30,7 @@ def download_run_from_wandb(
     include_filter: Optional[List[str]] = None,
     exclude_filter: Optional[List[str]] = None,
     overwrite: bool = False,
+    move: bool = False,
 ) -> None:
     run_ = api.run(f"{entity}/{project}/{run}")
     # pbar = tqdm.tqdm(run_.files(), desc="Downloading files")

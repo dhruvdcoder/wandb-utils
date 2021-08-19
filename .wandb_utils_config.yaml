@@ -1,6 +1,3 @@
-wandb_utils:
-  entity: iesl-boxes
-  project: multilabel-learning-datasets3
-
-#get_all_data:
-    #fields: [sweep_name, run, test_MAP]
+wandb-utils:
+  entity: dhruveshpate
+  project: wandb-utils-tester

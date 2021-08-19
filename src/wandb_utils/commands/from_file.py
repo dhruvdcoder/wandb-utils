@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @click.command(name="from-file")
 @click.argument(
-    "input_file",
+    "input-file",
     required=True,
     type=click.Path(path_type=pathlib.Path),  # type: ignore
 )
@@ -36,9 +36,15 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-i",
     "--index",
-    default="path",
     type=str,
     help="Field that is unique and can be used as index.",
+)
+@click.option(
+    "-d",
+    "--delimiter",
+    type=str,
+    default="\t",
+    help="Column delimiter (default: TAB)",
 )
 @processor
 @config_file_decorator()
@@ -47,16 +53,13 @@ def from_file_command(
     input_file: pathlib.Path,
     fields: Tuple[str, ...],
     index: str,
+    delimiter: str,
 ) -> pd.DataFrame:
-    """Read the data of runs from a csv file created using any wandb-utils command.
+    """Read the data of runs from a `input-file` created using any wandb-utils command.
 
-    INPUT_FILE is the path to a .csv file.
+    `input-file` is the path to a .csv file.
     """
-    df = from_file(
-        input_file,
-        list(fields),
-        index,
-    )
+    df = from_file(input_file, list(fields), index, delimiter)
     logger.debug(f"Filtered contents of {input_file}:\n{df}")
 
     return df
@@ -67,8 +70,9 @@ def from_file(
     input_file: pathlib.Path,
     fields: List[str] = None,
     index: str = None,
+    delimiter: str = "\t",
 ) -> pd.DataFrame:
-    df = read_df(input_file)
+    df = read_df(input_file, sep=delimiter)
 
     if index:
         df = df.set_index(index)
