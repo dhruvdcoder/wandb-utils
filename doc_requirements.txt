@@ -12,3 +12,4 @@ sphinx-autoapi
 docstr-coverage
 sphinx-click
 wandb
+pandas
