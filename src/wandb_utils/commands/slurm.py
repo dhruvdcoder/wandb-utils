@@ -122,8 +122,8 @@ class WandbUtilsSlurm(object):
                         self.sbatch_template_str = f.read()
                 else:
                     logger.info(
-                        f"Could not find sbatcb_template at"
-                        " {local_template} or {global_template}"
+                        "Could not find sbatcb_template at"
+                        f" {local_template} or {global_template}"
                     )
                     logger.info("Using default template.")
                     self.sbatch_template_str = SBATCH_TEMPLATE
@@ -132,7 +132,7 @@ class WandbUtilsSlurm(object):
                             f"Creating new global template at {global_template}"
                         )
                         f.write(self.sbatch_template_str)
-                logger.info("Creating new local template at {local_template}")
+                logger.info(f"Creating new local template at {local_template}")
                 with open(local_template, "w") as f:
                     f.write(self.sbatch_template_str)
 
@@ -352,12 +352,20 @@ def start_agents_command(
         logger.info("Submitting job(s)")
         for job_num in range(num_agents if chain else 1):
             dep = f"--dependency={dep_arg}" if dep_arg else ""
-            sbatch_command = ["sbatch"] + [dep] + [str(final_script)]
-            submission = subprocess.run(
-                sbatch_command,
-                capture_output=True,
+            sbatch_command = (
+                ["sbatch"] + ([dep] if dep else []) + [str(final_script)]
             )
-            submission.check_returncode()
+            try:
+                submission = subprocess.run(
+                    sbatch_command,
+                    capture_output=True,
+                )
+                submission.check_returncode()
+            except subprocess.CalledProcessError as pe:
+                logger.error("Could not submit the job.")
+                logger.error(f"stderr: {submission.stderr.decode('utf-8')}")
+                logger.error(f"stdout: {submission.stderr.decode('utf-8')}")
+                raise
             possible_jobid = submission.stdout.decode("utf-8").strip()
             # Expected str: Submitted .... <jobid>
             m = re.fullmatch(r"Submitted .+ (\d+)$", possible_jobid)
