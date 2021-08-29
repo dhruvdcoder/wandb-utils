@@ -65,6 +65,7 @@ setup(
     entry_points={
         "console_scripts": [
             "wandb-utils=wandb_utils.__main__:wandb_utils",
+            "wandb-slurm=wandb_utils.__main__:wandb_slurm",
         ]
     },
     classifiers=[

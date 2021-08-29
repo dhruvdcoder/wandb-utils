@@ -13,3 +13,4 @@ docstr-coverage
 sphinx-click
 wandb
 pandas
+jinja2schema

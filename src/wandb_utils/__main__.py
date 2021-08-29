@@ -14,4 +14,4 @@ logging.basicConfig(
 )
 
 
-from wandb_utils.commands import wandb_utils
+from wandb_utils.commands import wandb_utils, wandb_slurm

@@ -6,3 +6,4 @@ click-config-file
 PyClone
 tqdm
 pandas
+jinja2schema
