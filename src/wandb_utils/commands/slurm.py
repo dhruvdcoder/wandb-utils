@@ -28,8 +28,7 @@ from jinja2 import Environment, Template, meta
 
 logger = logging.getLogger(__name__)
 
-SBATCH_TEMPLATE = """
-#!/bin/bash
+SBATCH_TEMPLATE = """#!/bin/bash
 {% if num_gpus -%}
 #SBATCH --gres=gpu:{{ num_gpus }}
 {% endif -%}
@@ -97,6 +96,7 @@ class WandbUtilsSlurm(object):
             logger.info("sbatch_template not provided")
             local_template = self.directory / "sbatch.j2"
             local_template.parent.mkdir(parents=True, exist_ok=True)
+
             if local_template.exists() and local_template.is_file():
                 logger.info(f"Reading sbatch_template from {local_template}")
                 self.sbatch_template = local_template
@@ -114,6 +114,7 @@ class WandbUtilsSlurm(object):
                     / "sbatch.j2"
                 )
                 global_template.parent.mkdir(parents=True, exist_ok=True)
+
                 if global_template.exists() and global_template.is_file():
                     logger.info(
                         f"Reading sbatch_template from {global_template}"
@@ -326,13 +327,16 @@ def start_agents_command(
         y_n = input(
             "About to submit:\n{sbatch_content}\n\n Do you want to abort? [y/n] (n) "
         )
+
         if y_n not in ["y", "n", "", None]:
             raise ValueError("Please enter y or n.")
+
         if y_n == "y":
             logger.info("Aborting!")
             sys.exit(0)
 
     # submit job(s)
+
     if dry_run:
         logger.info("Not submitting job because --dry-run was set.")
         logger.info(
@@ -350,6 +354,7 @@ def start_agents_command(
         )
     else:
         logger.info("Submitting job(s)")
+
         for job_num in range(num_agents if chain else 1):
             dep = f"--dependency={dep_arg}" if dep_arg else ""
             sbatch_command = (
@@ -369,6 +374,7 @@ def start_agents_command(
             possible_jobid = submission.stdout.decode("utf-8").strip()
             # Expected str: Submitted .... <jobid>
             m = re.fullmatch(r"Submitted .+ (\d+)$", possible_jobid)
+
             if m:
                 possible_jobid = m.groups()[0]
                 logger.info(f"Submitted {possible_jobid}")
