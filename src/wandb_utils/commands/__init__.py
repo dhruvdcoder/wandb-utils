@@ -11,6 +11,7 @@ from .print import print_command
 from .backup import rclone
 from .run_dir import run_dir_command
 from .files import files_command
+from .slurm import wandb_slurm
 import click
 
 wandb_utils.add_command(best_model_command)

@@ -22,8 +22,10 @@ logger = logging.getLogger(__name__)
 DEFAULT_CONFIG: Dict = {"wandb_utils": {}, "wandb_utils_chain": {}}
 LOCAL_CONFIG_FILENAME = ".wandb_utils_config.yaml"
 GLOBAL_CONFIG_FILENAME = str(
-    pathlib.Path(click.get_app_dir("wandb_utils")) / "config.yaml"
+    pathlib.Path(click.get_app_dir("wandb_utils", force_posix=True))
+    / "config.yaml"
 )
+
 
 RAW_CONFIG: Optional[Dict] = None
 GLOBAL_SETTINGS: Optional[Dict] = None

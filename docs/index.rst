@@ -22,4 +22,5 @@ What can it do?
    Processing data <processing_data>
    Downloading run files <download_run>
    Uploading run files <uploading_files_to_runs>
+   Manging wandb agents on a slurm cluster <managing_jobs_on_slurm>
    cli

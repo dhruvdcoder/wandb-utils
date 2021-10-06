@@ -55,8 +55,25 @@ class DictParamType(click.ParamType):
             raise ValueError
 
 
+class ListParamType(click.ParamType):
+    name = "list"
+
+    def __init__(self, sep: str = "|") -> None:
+        super().__init__()
+        self.sep = sep
+
+    def convert(self, value: str, param, ctx) -> List[str]:  # type:ignore
+        if isinstance(value, str):
+            return value.split(self.sep)
+        elif isinstance(value, list):
+            return value
+        else:
+            raise ValueError
+
+
 METRIC = MetricParamType()
 DICT = DictParamType()
+LIST = ListParamType()
 
 
 class WandbAPIWrapper(object):
