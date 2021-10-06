@@ -10,3 +10,4 @@ flake8-black
 pre-commit
 darglint
 coverage
+pre-commit-hooks>=4.0.1
