@@ -8,6 +8,7 @@
 
 - Move to click cli [\#5](https://github.com/dhruvdcoder/wandb-utils/issues/5)
 - Rclone client [\#4](https://github.com/dhruvdcoder/wandb-utils/issues/4)
+- Start sweep agents on a slurm cluster [\#17](https://github.com/dhruvdcoder/wandb-utils/pull/17) ([dhruvdcoder](https://github.com/dhruvdcoder))
 - Delete/Copy/Move files between local and wandb server. [\#14](https://github.com/dhruvdcoder/wandb-utils/pull/14) ([dhruvdcoder](https://github.com/dhruvdcoder))
 
 ### 📖 Documentation updates
