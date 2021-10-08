@@ -32,6 +32,7 @@ Chaining can be used to download/delete files for multiple runs.
 
 
 .. note::
+
    If the :code:`--action` is :code:`move` instead of :code:`copy`, then after downloading, the file on wandb server will be deleted.
 
 Similarly :code:`--action delete` can be used to delete files from wandb server.
