@@ -1,8 +1,8 @@
 # Changelog
 
-## [🚧Unreleased🚧](https://github.com/dhruvdcoder/wandb-utils/tree/HEAD)
+## [v0.1.0](https://github.com/dhruvdcoder/wandb-utils/tree/v0.1.0) (2021-10-06)
 
-[Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.0.2...HEAD)
+[Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.0.2...v0.1.0)
 
 ### ✨ Features and Enhancements:
 
