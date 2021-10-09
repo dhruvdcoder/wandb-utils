@@ -19,7 +19,7 @@ import click_config_file
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_CONFIG: Dict = {"wandb_utils": {}, "wandb_utils_chain": {}}
+DEFAULT_CONFIG: Dict = {"wandb-utils": {}, "wandb-slurm": {}}
 LOCAL_CONFIG_FILENAME = ".wandb_utils_config.yaml"
 GLOBAL_CONFIG_FILENAME = str(
     pathlib.Path(click.get_app_dir("wandb_utils", force_posix=True))
@@ -40,32 +40,28 @@ def load_commands_config(
 
 
 def __load_config(
-    config_file: Optional[Union[str, pathlib.Path]] = None,
+    config_file: Union[str, pathlib.Path],
 ) -> None:
+    assert config_file is not None
     global RAW_CONFIG
     global GLOBAL_SETTINGS
 
-    if config_file is None:
-        if pathlib.Path(LOCAL_CONFIG_FILENAME).is_file():
-            config_file = LOCAL_CONFIG_FILENAME
-
-    if config_file is None:
-        if pathlib.Path(GLOBAL_CONFIG_FILENAME).is_file():
-            config_file = GLOBAL_CONFIG_FILENAME
-
-    if config_file is None:
+    if not pathlib.Path(config_file).exists():
         RAW_CONFIG = DEFAULT_CONFIG
         GLOBAL_SETTINGS = {}
-    assert config_file is not None
+        logger.info("config for wandb-utils does not exist")
+        logger.info(f"storing default config for the project in {config_file}")
+        with open(pathlib.Path(config_file), "w") as f:
+            yaml = YAML()
+            yaml.dump(RAW_CONFIG, f)
+    else:
 
-    if not pathlib.Path(config_file).is_file():
-        raise ValueError(f"{config_file} does not exist")
-    yaml = YAML()
+        yaml = YAML()
 
-    logger.debug(f"Read config from {config_file}")
-    RAW_CONFIG = yaml.load(pathlib.Path(config_file))
-    RAW_CONFIG = cast(Dict, RAW_CONFIG)
-    GLOBAL_SETTINGS = RAW_CONFIG.pop("global", {})
+        logger.debug(f"Read config from {config_file}")
+        RAW_CONFIG = yaml.load(pathlib.Path(config_file))
+        RAW_CONFIG = cast(Dict, RAW_CONFIG)
+        GLOBAL_SETTINGS = RAW_CONFIG.pop("global", {})
 
 
 def load_config(
