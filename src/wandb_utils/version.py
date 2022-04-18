@@ -1,6 +1,6 @@
 _MAJOR = "0"
 _MINOR = "1"
-_PATCH = "1"
+_PATCH = "2"
 _SUFFIX = ""
 
 VERSION_SHORT = f"{_MAJOR}.{_MINOR}"
