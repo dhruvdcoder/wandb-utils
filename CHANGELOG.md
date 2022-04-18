@@ -1,5 +1,18 @@
 # Changelog
 
+## [🚧Unreleased🚧](https://github.com/dhruvdcoder/wandb-utils/tree/HEAD)
+
+[Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.1.1...HEAD)
+
+### ✨ Features and Enhancements:
+
+- Make the `filter-df` command more transparant by giving the user complete control over which of `pd.query`, `pd.eval`, `eval` or `exec` should be called. [\#20](https://github.com/dhruvdcoder/wandb-utils/issues/20)
+- Make dataframe manipulation more transparant  [\#22](https://github.com/dhruvdcoder/wandb-utils/pull/22) ([dhruvdcoder](https://github.com/dhruvdcoder))
+
+## [v0.1.1](https://github.com/dhruvdcoder/wandb-utils/tree/v0.1.1) (2021-10-09)
+
+[Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.1.0...v0.1.1)
+
 ## [v0.1.0](https://github.com/dhruvdcoder/wandb-utils/tree/v0.1.0) (2021-10-06)
 
 [Full Changelog](https://github.com/dhruvdcoder/wandb-utils/compare/v0.0.2...v0.1.0)
