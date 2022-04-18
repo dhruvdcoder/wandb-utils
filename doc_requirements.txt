@@ -14,3 +14,4 @@ sphinx-click
 wandb
 pandas
 jinja2schema
+mistune==0.8.4
