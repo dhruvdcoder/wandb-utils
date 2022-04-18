@@ -19,39 +19,37 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# bunch of useful functions that can be used in pd-eval calls.
+def rmax(A, B):
+    return pd.concat([A, B], axis=1).max(axis=1)
+
+
+def __python_exec(df: pd.DataFrame, q: str) -> pd.DataFrame:
+    exec(q)  # exec does not return anything
+    return df
+
+
+def __python_eval(df: pd.DataFrame, q: str) -> pd.DataFrame:
+    df = eval(q)
+    return df
+
+
+def __pd_eval(df: pd.DataFrame, q: str, engine: str = "python") -> pd.DataFrame:
+    try:
+        df = pd.eval(q, engine=engine)
+    except Exception as e:
+        logger.warning(f"pd.eval failed with {e} without a target. Trying with a target.")
+        df = pd.eval(q, engine=engine, target=df)
+    return df
+
+
 def __query(df: pd.DataFrame, q: str, engine: str = "python") -> pd.DataFrame:
     try:
         df = df.query(q, engine=engine)
     except Exception as e:
-        logger.warning(f"df.query failed with {e}")
-        logger.warning("trying pd.eval")
-        try:
-            df = pd.eval(q, engine=engine)
-        except Exception as e:
-            logger.warning(f"pd.eval failed with {e}")
-            logger.warning("trying python's eval")
-            df = eval(q)
-
-    return df
-
-
-def df_query(
-    df: pd.DataFrame, df_filter: str, engine: str = "python"
-) -> pd.DataFrame:
-    logger.debug(f"Filtering using {df_filter}")
-
-    if df_filter.startswith("-"):  # remove the filter results
-        df_ = __query(df, df_filter[1:], engine=engine)
-        df = df[~df.index.isin(df_.index)]
-    elif df_filter.startswith("+"):  # keep only the filter results
-        df = __query(df, df_filter[1:], engine=engine)
-    else:
-        df = __query(df, df_filter, engine=engine)
-
-    if not isinstance(df, pd.DataFrame):
-        if isinstance(df, pd.Series):
-            df = pd.DataFrame(df).T
-
+        logger.warning(f"df.query failed with {e}.")
+        logger.warning("Trying df.query with target.")
+        df = df.query(q, engine=engine, target=df)
     return df
 
 
@@ -74,34 +72,62 @@ def df_query(
 @click.option(
     "--query",
     type=str,
+    help=("Query string passed to df.query. "
+          "See https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html for details"),
+)
+@click.option(
+    "--pd-eval",
+    type=str,
+    help=("String to pass to pd.eval"
+          "See https://pandas.pydata.org/docs/reference/api/pandas.eval.html#pandas.eval for details.")
+)
+@click.option(
+    "--python-eval",
+    type=str,
+    help=("String to passed to python's eval `df = eval(python_eval)`")
+)
+@click.option(
+    "--python-exec",
+    type=str,
+    help=("String to pass to python's exec")
 )
 @processor
 @config_file_decorator()
 def filter_df(
-    df: pd.DataFrame,
-    fields: Tuple[str, ...],
-    index: str,
-    query: str,
+        df: pd.DataFrame,
+        fields: Tuple[str, ...],
+        index: str,
+        query: str,
+        pd_eval: str,
+        python_eval: str,
+        python_exec: str,
 ) -> pd.DataFrame:
-    """Apply a filter using `pandas.query`.
+    """Apply a processor using `pandas.query`, `pandas.eval`, `python eval` or `python exec`.
 
-    QUERY is a pandas query string prepended with + (include) or - (exclude)
-        For example to take only those rows that have 'sweep_name' column that contains 'best', the query string will be '+sweep_name.str.contains("best")'
-        See https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.query.html#pandas.DataFrame.query for details
-        See https://jakevdp.github.io/PythonDataScienceHandbook/03.12-performance-eval-and-query.html for examples of query strings.
+    No more than one of the processors should be provided at a time.
     """
     f = list(fields)  # type:ignore
-
-    if query:
-        df = df_query(df, query)
-    logger.debug(f"Filtered contents:\n{df}")
+    processors = [(query, __query, "query"), (pd_eval, __pd_eval, "pd-eval"),
+                  (python_eval, __python_eval, "python-eval"),
+                  (python_exec, __python_exec, "python-exec")]
+    selected_processor = None
+    for i, s in enumerate(processors):
+        if s[0]:
+            selected_processor = s
+            for j in range(i + 1, len(processors)):
+                if processors[j][0]:
+                    raise ValueError("Only one of the processors should be set."
+                                     f"You provided {s[-1]} and {processors[j][-1]}.")
+            break
+    if selected_processor is not None:
+        df = selected_processor[1](df, selected_processor[0])
+        logger.debug(f"Filtered contents:\n{df}")
 
     if index:
         df = df.set_index(index)
 
         if f and index in f:
             f.remove(index)
-
     if f:
         df = df[list(f)]
 
