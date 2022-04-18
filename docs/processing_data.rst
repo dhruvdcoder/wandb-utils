@@ -32,7 +32,7 @@ performs grouby followed by taking the mean of groups.
 
 .. code-block:: console
 
-    wandb-utils -e USERNAME -p PROJECT \
+    $ wandb-utils -e USERNAME -p PROJECT \
     all-data \
     filter-df --pd-eval "test_CMAP=rmax(df.test_MAP_max_n, df.test_MAP_min_n)" \
     filter-df --pd-eval "_model=df.tags.str.extract(r'model@([^\|]+)',expand=False)" \
